@@ -46,3 +46,23 @@ func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{
 	}
 	return
 }
+
+func Query(reqDto reqQueryDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
+	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+
+	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
+	SetValue(wxPayData, "out_trade_no", reqDto.OutTradeNo)
+
+	signStr := base.JoinMapObject(wxPayData.DataAttr)
+	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
+	_, body, err := httpreq.NewPost(URLQUERY, []byte(wxPayData.ToXml()),
+		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
+	if err != nil {
+		return
+	}
+	result, err = RespParse(body, custDto.Key)
+	if err != nil {
+		return
+	}
+	return
+}
