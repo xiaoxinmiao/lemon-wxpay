@@ -1,6 +1,7 @@
 package wxpay
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/relax-space/go-kit/random"
@@ -12,8 +13,6 @@ import (
 )
 
 func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
-	//param := structs.Map(&reqDto)
-
 	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
 
 	SetValue(wxPayData, "body", reqDto.Body)
@@ -37,12 +36,43 @@ func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{
 	_, body, err := httpreq.NewPost(URLPAY, []byte(wxPayData.ToXml()),
 		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
 	if err != nil {
+		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
 		return
 	}
 	result, err = RespParse(body, custDto.Key)
 	if err != nil {
-		//result[respKeys.Pay.OutTradeNo] = outTradeNo
 		return
 	}
 	return
 }
+
+// func LoopQuery(rawMap map[string]string, limit, interval int) (queryResult map[string]interface{}, err error) {
+// 	count := limit / interval
+// 	waitTime := time.Duration(interval) * time.Second //2s
+// 	for index := 0; index < count; index++ {
+// 		queryResult, err = Query(rawMap)
+// 		if err == nil { // 1. query success
+// 			tradeStatusObj, ok := queryResult["trade_state"]
+// 			if !ok {
+// 				continue
+// 			}
+// 			tradeStatus := tradeStatusObj.(string)
+
+// 			switch {
+// 			case tradeStatus == "TRADE_SUCCESS":
+// 				return
+// 			case tradeStatus == "TRADE_CLOSED" || tradeStatus == "TRADE_FINISHED":
+// 				err = errors.New("wechat pay failure")
+// 				return
+// 			case tradeStatus == "WAIT_BUYER_PAY":
+// 				time.Sleep(waitTime)
+// 				continue
+// 			default:
+// 				err = errors.New("wechat pay failure")
+// 				return
+// 			}
+// 		}
+// 	}
+// 	err = fmt.Errorf("wechat pay overtime:%v(s)", limit)
+// 	return
+// }

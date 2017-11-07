@@ -9,7 +9,7 @@ import (
 
 func Test_Pay(t *testing.T) {
 	reqDto := reqPayDto{}
-	reqDto.Base.AppId = "xiao.xinmiao"
+	reqDto.AppId = "xiao.xinmiao"
 	s := structs.New(reqDto)
 	s.TagName = "json"
 	param := s.Map()
