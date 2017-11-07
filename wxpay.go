@@ -1,9 +1,11 @@
 package wxpay
 
 import (
-	"kit/httpreq"
-	"kit/util"
 	"strings"
+
+	"github.com/relax-space/go-kit/random"
+
+	"github.com/relax-space/go-kit/httpreq"
 
 	"github.com/relax-space/go-kit/base"
 	"github.com/relax-space/go-kit/sign"
@@ -15,7 +17,7 @@ func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{
 	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
 
 	SetValue(wxPayData, "body", reqDto.Body)
-	SetValue(wxPayData, "out_trade_no", util.Uuid(OUTTRADENO))
+	SetValue(wxPayData, "out_trade_no", random.Uuid(OUTTRADENO))
 	SetValue(wxPayData, "total_fee", reqDto.TotalFee)
 	SetValue(wxPayData, "auth_code", reqDto.AuthCode)
 	SetValue(wxPayData, "device_info", reqDto.DeviceInfo)
