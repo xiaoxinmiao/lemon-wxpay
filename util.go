@@ -1,11 +1,11 @@
 package wxpay
 
 import (
-	"kit/util"
 	"strings"
 
 	"github.com/relax-space/go-kit/base"
 	"github.com/relax-space/go-kit/data"
+	"github.com/relax-space/go-kit/random"
 	"github.com/relax-space/go-kit/sign"
 )
 
@@ -36,7 +36,7 @@ func BuildCommonparam(baseDto reqBaseDto) *data.Data {
 	SetValue(data, "sub_appid", baseDto.SubAppId)
 	SetValue(data, "mch_id", baseDto.MchId)
 	SetValue(data, "sub_mch_id", baseDto.SubMchId)
-	SetValue(data, "nonce_str", util.Uuid(""))
+	SetValue(data, "nonce_str", random.Uuid(""))
 	return data
 }
 

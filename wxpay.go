@@ -35,7 +35,7 @@ func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{
 	signStr := base.JoinMapObject(wxPayData.DataAttr)
 	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
 	_, body, err := httpreq.NewPost(URLPAY, []byte(wxPayData.ToXml()),
-		&httpreq.Header{ContentType: httpreq.ContentType.MIMEApplicationXMLCharsetUTF8}, nil)
+		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
 	if err != nil {
 		return
 	}
