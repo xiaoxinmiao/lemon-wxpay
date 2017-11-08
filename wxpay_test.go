@@ -42,7 +42,7 @@ func Test_Pay(t *testing.T) {
 		}
 		test.Ok(t, err)
 	}
-	//fmt.Printf("%+v", result)
+	fmt.Printf("%+v", result)
 	test.Ok(t, err)
 
 }

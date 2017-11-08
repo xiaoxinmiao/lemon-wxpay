@@ -11,6 +11,7 @@ import (
 	"github.com/relax-space/go-kit/sign"
 )
 
+//wechat const
 const (
 	SYSTEMERROR   = "SYSTEMERROR"
 	ORDERNOTEXIST = "ORDERNOTEXIST"
@@ -18,14 +19,18 @@ const (
 	USERPAYING    = "USERPAYING"
 )
 
+//random prefixes const
 const (
 	PRE_OUTTRADENO    = "14"
 	PRE_OUTREFUNDNO   = "15"
 	PRE_PREOUTTRADENO = "16"
 )
+
+//message const
 const (
-	MESSAGE_PAYING = "MESSAGE_PAYING"
-	MESSAGE_WECHAT = "MESSAGE_WECHAT"
+	MESSAGE_PAYING   = "MESSAGE_PAYING"
+	MESSAGE_WECHAT   = "MESSAGE_WECHAT"
+	MESSAGE_OVERTIME = "MESSAGE_OVERTIME"
 )
 
 const (
