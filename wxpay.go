@@ -19,29 +19,27 @@ func LoopQuery(reqDto reqQueryDto, custDto reqCustomerDto, limit, interval int) 
 	waitTime := time.Duration(interval) * time.Second //2s
 	for index := 0; index < count; index++ {
 		queryResult, err = Query(reqDto, custDto)
-		fmt.Printf("%+v", queryResult)
 		if err == nil { // 1. query success
 			tradeStatusObj, ok := queryResult["trade_state"]
 			if !ok {
 				continue
 			}
 			tradeStatus := tradeStatusObj.(string)
-			fmt.Println(tradeStatus)
 			switch {
 			case tradeStatus == "SUCCESS":
+				return
+			case tradeStatus == "CLOSED" || tradeStatus == "REFUND" || tradeStatus == "REVOKED" || tradeStatus == "NOTPAY" || tradeStatus == "PAYERROR":
+				err = errors.New("wechat pay failure")
 				return
 			case tradeStatus == "USERPAYING":
 				if index < count {
 					time.Sleep(waitTime)
 					continue
 				}
-			case tradeStatus == "CLOSED" || tradeStatus == "REFUND" || tradeStatus == "REVOKED" || tradeStatus == "NOTPAY" || tradeStatus == "PAYERROR":
-				err = errors.New("wechat pay failure")
-				return
 			}
 		}
 	}
-	err = fmt.Errorf("wechat pay overtime:%v(s)", limit)
+	err = errors.New(MESSAGE_OVERTIME)
 	return
 }
 
