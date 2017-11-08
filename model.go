@@ -1,6 +1,6 @@
 package wxpay
 
-type reqBaseDto struct {
+type ReqBaseDto struct {
 	AppId    string `json:"appid,omitempty"`
 	SubAppId string `json:"sub_appid,omitempty"`
 	MchId    string `json:"mch_id,omitempty"`
@@ -10,8 +10,8 @@ type reqBaseDto struct {
 	Sign string `json:"sign,omitempty"`
 }
 
-type reqPayDto struct {
-	reqBaseDto
+type ReqPayDto struct {
+	ReqBaseDto
 	DeviceInfo string `json:"device_info,omitempty"`
 	Body       string `json:"body,omitempty"`
 	Detail     string `json:"detail,omitempty"`
@@ -25,11 +25,11 @@ type reqPayDto struct {
 	AuthCode       string `json:"auth_code,omitempty"` //10,11,12,13,14,15
 
 	OutTradeNo string       `json:"out_trade_no,omitempty"`
-	SceneInfo  sceneInfoDto `json:"scene_info,omitempty"`
+	SceneInfo  SceneInfoDto `json:"scene_info,omitempty"`
 }
 
-type reqPrePayDto struct {
-	reqBaseDto
+type ReqPrePayDto struct {
+	ReqBaseDto
 	Body       string
 	Detail     string
 	Attach     string
@@ -49,25 +49,25 @@ type reqPrePayDto struct {
 	SubOpenId string
 
 	OutTradeNo     string `json:"out_trade_no,omitempty"`
-	SceneInfo      sceneInfoDto
+	SceneInfo      SceneInfoDto
 	SpbillCreateIp string
 }
 
-type sceneInfoDto struct {
+type SceneInfoDto struct {
 	Id       string `json:"id,omitempty"`
 	Name     string `json:"name,omitempty"`
 	AreaCode string `json:"area_code,omitempty"`
 	Address  string `json:"address,omitempty"`
 }
 
-type reqQueryDto struct {
-	reqBaseDto
+type ReqQueryDto struct {
+	ReqBaseDto
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty"`
 }
 
-type reqRefundDto struct {
-	reqBaseDto
+type ReqRefundDto struct {
+	ReqBaseDto
 	OutRefundNo   string `json:"out_refund_no,omitempty"`
 	DeviceInfo    string `json:"device_info,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty"`
@@ -78,13 +78,13 @@ type reqRefundDto struct {
 	RefundAccount string `json:"refund_account,omitempty"`
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 }
-type reqReverseDto struct {
-	reqBaseDto
+type ReqReverseDto struct {
+	ReqBaseDto
 	TransactionId string `json:"transaction_id,omitempty"`
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 }
 
-type reqCustomerDto struct {
+type ReqCustomerDto struct {
 	Key          string `json:"key,omitempty"`
 	CertPathName string `json:"cert_path_name,omitempty"`
 	CertPathKey  string `json:"cert_path_key,omitempty"`
@@ -110,7 +110,7 @@ type RespDto struct {
 	ErrCodeDes string `json:"err_code_des,omitempty"`
 }
 
-type respPayDto struct {
+type RespPayDto struct {
 	DeviceInfo  string `json:"device_info,omitempty"`
 	OpenId      string `json:"openid,omitempty"`
 	IsSubscribe string `json:"is_subscribe,omitempty"`
@@ -132,7 +132,7 @@ type respPayDto struct {
 	OutTradeNo string `json:"out_trade_no,omitempty"`
 }
 
-type respQueryDto struct {
+type RespQueryDto struct {
 	DeviceInfo     string `json:"device_info,omitempty"`
 	OpenId         string `json:"openid,omitempty"`
 	IsSubscribe    string `json:"is_subscribe,omitempty"`
@@ -180,7 +180,7 @@ type respQueryDto struct {
 	OutTradeNo     string `json:"out_trade_no,omitempty"`
 }
 
-type respRefundDto struct {
+type RespRefundDto struct {
 	DeviceInfo    string `json:"device_info,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty"`
 	OutRefundNo   string `json:"out_refund_no,omitempty"`
@@ -218,11 +218,11 @@ type respRefundDto struct {
 
 	OutTradeNo string `json:"out_trade_no,omitempty"`
 }
-type respReverseDto struct {
+type RespReverseDto struct {
 	Recall string `json:"recall,omitempty"`
 }
 
-type respPrePayDto struct {
+type RespPrePayDto struct {
 	TradeType string `json:"trade_type,omitempty"`
 	PrePayId  string `json:"prepay_id,omitempty"`
 	CodeUrl   string `json:"code_url,omitempty"`
