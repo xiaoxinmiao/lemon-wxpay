@@ -1,7 +1,10 @@
 package wxpay
 
 import (
+	"errors"
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/relax-space/go-kit/random"
 
@@ -11,13 +14,46 @@ import (
 	"github.com/relax-space/go-kit/sign"
 )
 
-func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
-	//param := structs.Map(&reqDto)
+func LoopQuery(reqDto reqQueryDto, custDto reqCustomerDto, limit, interval int) (queryResult map[string]interface{}, err error) {
+	count := limit / interval
+	waitTime := time.Duration(interval) * time.Second //2s
+	for index := 0; index < count; index++ {
+		queryResult, err = Query(reqDto, custDto)
+		fmt.Printf("%+v", queryResult)
+		if err == nil { // 1. query success
+			tradeStatusObj, ok := queryResult["trade_state"]
+			if !ok {
+				continue
+			}
+			tradeStatus := tradeStatusObj.(string)
+			fmt.Println(tradeStatus)
+			switch {
+			case tradeStatus == "SUCCESS":
+				return
+			case tradeStatus == "USERPAYING":
+				if index < count {
+					time.Sleep(waitTime)
+					continue
+				}
+			case tradeStatus == "CLOSED" || tradeStatus == "REFUND"|| tradeStatus == "REVOKED"|| tradeStatus == "NOTPAY"|| tradeStatus == "PAYERROR":
+				err = errors.New("wechat pay failure")
+				return
+			}
+		}
+	}
+	err = fmt.Errorf("wechat pay overtime:%v(s)", limit)
+	return
+}
 
+func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+	outTradeNo := reqDto.OutTradeNo
 
 	SetValue(wxPayData, "body", reqDto.Body)
-	SetValue(wxPayData, "out_trade_no", random.Uuid(OUTTRADENO))
+	if len(outTradeNo) == 0 {
+		outTradeNo = random.Uuid(OUTTRADENO)
+		SetValue(wxPayData, "out_trade_no", outTradeNo)
+	}
 	SetValue(wxPayData, "total_fee", reqDto.TotalFee)
 	SetValue(wxPayData, "auth_code", reqDto.AuthCode)
 	SetValue(wxPayData, "device_info", reqDto.DeviceInfo)
@@ -37,16 +73,18 @@ func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{
 	_, body, err := httpreq.NewPost(URLPAY, []byte(wxPayData.ToXml()),
 		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
 	if err != nil {
+		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
 		return
 	}
 	result, err = RespParse(body, custDto.Key)
 	if err != nil {
-		//result[respKeys.Pay.OutTradeNo] = outTradeNo
+		if err.Error() == MESSAGE_PAYING {
+			result = map[string]interface{}{"out_trade_no": outTradeNo}
+		}
 		return
 	}
 	return
 }
-
 func Query(reqDto reqQueryDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
 

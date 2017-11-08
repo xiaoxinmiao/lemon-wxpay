@@ -1,6 +1,8 @@
 package wxpay
 
 import (
+	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/relax-space/go-kit/base"
@@ -20,6 +22,10 @@ const (
 	OUTTRADENO    = "14"
 	OUTREFUNDNO   = "15"
 	PREOUTTRADENO = "16"
+)
+const (
+	MESSAGE_PAYING = "MESSAGE_PAYING"
+	MESSAGE_WECHAT = "MESSAGE_WECHAT"
 )
 
 const (
@@ -47,38 +53,34 @@ func SetValue(data *data.Data, key string, value interface{}) {
 }
 
 func RespParse(bodyByte []byte, key string) (result map[string]interface{}, err error) {
-	//wxResponse := new(WxPayDataResp)
 	data := data.NewDataObj()
 	err = data.FromXml(string(bodyByte))
 	if err != nil {
-		//to be
-		//statusMessage = util.NewApiStatusMessage(http.StatusInternalServerError, 20004, "")
 		return
 	}
-	//util.Info(wxResponse)
 
-	if strings.ToUpper(data.GetValue("return_code").(string)) != "SUCCESS" {
-		//statusMessage = util.NewApiStatusMessage(http.StatusInternalServerError, 20004, wxResponse.GetValue(respKeys.Base.ReturnMsg).(string))
+	if !data.IsSet("return_code") || strings.ToUpper(data.GetValue("return_code").(string)) != "SUCCESS" {
+		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, data.GetValue("return_msg"))
 		return
 	}
 	if !(data.IsSet("result_code")) || strings.ToUpper(data.GetValue("result_code").(string)) != "SUCCESS" {
 		errCode := data.GetValue("err_code")
 		if errCode == SYSTEMERROR || errCode == BANKERROR || errCode == USERPAYING {
-			//statusMessage = util.NewApiStatusMessage(http.StatusOK, 20006, "")
+			err = errors.New(MESSAGE_PAYING)
 			return
 		} else {
-			//errMsg := data.GetValue("err_code_des")
-			//statusMessage = util.NewApiStatusMessage(http.StatusOK, 20005, "", fmt.Sprintf("errCode:%v,errMsg:%v", errCode, errMsg))
+			err = fmt.Errorf("%v:%v-%v", MESSAGE_WECHAT, errCode, data.GetValue("err_code_des"))
 			return
 		}
 	}
-
 	if !data.IsSet("sign") {
-		//to be
+		err = errors.New("Signature verification failed")
 		return
 	}
-	if sign.CheckSign(base.JoinMapObject(data.DataAttr), key, data.DataAttr["sign"].(string)) == false {
-		//statusMessage = util.NewApiStatusMessage(http.StatusOK, 20002, "")
+	wxSign := data.DataAttr["sign"].(string)
+	delete(data.DataAttr, "sign")
+	if sign.CheckSign(base.JoinMapObject(data.DataAttr), key, wxSign) == false {
+		err = errors.New("Signature verification failed")
 		return
 	}
 	result = data.DataAttr
