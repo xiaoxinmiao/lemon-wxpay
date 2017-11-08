@@ -11,14 +11,14 @@ import (
 var (
 	appId = flag.String("WXPAY_APPID", os.Getenv("WXPAY_APPID"), "WXPAY_APPID")
 	key   = flag.String("WXPAY_KEY", os.Getenv("WXPAY_KEY"), "WXPAY_KEY")
-	mchid = flag.String("WXPAY_MCHID", os.Getenv("WXPAY_MCHID"), "WXPAY_MCHID")
+	mchId = flag.String("WXPAY_MCHID", os.Getenv("WXPAY_MCHID"), "WXPAY_MCHID")
 )
 
 func Test_Pay(t *testing.T) {
 	reqDto := reqPayDto{
 		reqBaseDto: reqBaseDto{
 			AppId: *appId,
-			MchId: *mchid,
+			MchId: *mchId,
 		},
 		AuthCode: "134511727606227397",
 		Body:     "xiaoxinmiao test",
@@ -50,7 +50,7 @@ func Test_Query(t *testing.T) {
 	reqDto := reqQueryDto{
 		reqBaseDto: reqBaseDto{
 			AppId: *appId,
-			MchId: *mchid,
+			MchId: *mchId,
 		},
 		OutTradeNo: "14201711085205823413229775520",
 	}
@@ -58,6 +58,26 @@ func Test_Query(t *testing.T) {
 		Key: *key,
 	}
 	result, err := Query(reqDto, custDto)
+	fmt.Printf("%+v", result)
+	test.Ok(t, err)
+}
+
+func Test_refund(t *testing.T) {
+	reqDto := reqRefundDto{
+		reqBaseDto: reqBaseDto{
+			AppId: *appId,
+			MchId: *mchId,
+		},
+		OutTradeNo: "14201711085205823413229775520",
+		RefundFee:  1,
+	}
+	custDto := reqCustomerDto{
+		Key:          *key,
+		CertPathName: fmt.Sprintf("c:/cert/%v/apiclient_cert.pem", *mchId),
+		CertPathKey:  fmt.Sprintf("c:/cert/%v/apiclient_key.pem", *mchId),
+		RootCa:       fmt.Sprintf("c:/cert/%v/rootca.pem", *mchId),
+	}
+	result, err := Refund(reqDto, custDto)
 	fmt.Printf("%+v", result)
 	test.Ok(t, err)
 }

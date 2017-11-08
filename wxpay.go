@@ -35,7 +35,7 @@ func LoopQuery(reqDto reqQueryDto, custDto reqCustomerDto, limit, interval int) 
 					time.Sleep(waitTime)
 					continue
 				}
-			case tradeStatus == "CLOSED" || tradeStatus == "REFUND"|| tradeStatus == "REVOKED"|| tradeStatus == "NOTPAY"|| tradeStatus == "PAYERROR":
+			case tradeStatus == "CLOSED" || tradeStatus == "REFUND" || tradeStatus == "REVOKED" || tradeStatus == "NOTPAY" || tradeStatus == "PAYERROR":
 				err = errors.New("wechat pay failure")
 				return
 			}
@@ -47,13 +47,13 @@ func LoopQuery(reqDto reqQueryDto, custDto reqCustomerDto, limit, interval int) 
 
 func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
-	outTradeNo := reqDto.OutTradeNo
 
-	SetValue(wxPayData, "body", reqDto.Body)
+	outTradeNo := reqDto.OutTradeNo
 	if len(outTradeNo) == 0 {
-		outTradeNo = random.Uuid(OUTTRADENO)
-		SetValue(wxPayData, "out_trade_no", outTradeNo)
+		outTradeNo = random.Uuid(PRE_OUTTRADENO)
 	}
+	SetValue(wxPayData, "out_trade_no", outTradeNo)
+	SetValue(wxPayData, "body", reqDto.Body)
 	SetValue(wxPayData, "total_fee", reqDto.TotalFee)
 	SetValue(wxPayData, "auth_code", reqDto.AuthCode)
 	SetValue(wxPayData, "device_info", reqDto.DeviceInfo)
@@ -102,5 +102,50 @@ func Query(reqDto reqQueryDto, custDto reqCustomerDto) (result map[string]interf
 	if err != nil {
 		return
 	}
+	return
+}
+
+func Refund(reqDto reqRefundDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
+	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+	//query
+	queryDto := reqQueryDto{reqBaseDto: reqDto.reqBaseDto, OutTradeNo: reqDto.OutTradeNo}
+	queryResult, err := Query(queryDto, custDto)
+	if err != nil {
+		err = errors.New("refund failure")
+		return
+	}
+	totalFee, ok := queryResult["total_fee"]
+	if !ok {
+		err = errors.New("refund failure")
+		return
+	}
+
+	outRefundNo := reqDto.OutRefundNo
+	if len(outRefundNo) == 0 {
+		outRefundNo = random.Uuid(PRE_OUTREFUNDNO)
+	}
+	SetValue(wxPayData, "out_refund_no", outRefundNo)
+	SetValue(wxPayData, "device_info", reqDto.DeviceInfo)
+	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
+	SetValue(wxPayData, "total_fee", totalFee)
+	SetValue(wxPayData, "refund_fee", reqDto.RefundFee)
+
+	SetValue(wxPayData, "refund_fee_type", reqDto.RefundFeeType)
+	SetValue(wxPayData, "refund_account", reqDto.RefundAccount)
+	SetValue(wxPayData, "out_trade_no", reqDto.OutTradeNo)
+	signStr := base.JoinMapObject(wxPayData.DataAttr)
+	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
+
+	tr, err := httpreq.CertTransport(custDto.CertPathName, custDto.CertPathKey, custDto.RootCa)
+	if err != nil {
+		err = errors.New("Certificate verification failed")
+		return
+	}
+	_, body, err := httpreq.NewPost(URLREFUND, []byte(wxPayData.ToXml()), &httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, tr)
+	if err != nil {
+		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
+		return
+	}
+	result, err = RespParse(body, custDto.Key)
 	return
 }

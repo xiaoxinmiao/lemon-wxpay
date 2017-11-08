@@ -68,9 +68,9 @@ type reqQueryDto struct {
 
 type reqRefundDto struct {
 	reqBaseDto
+	OutRefundNo   string `json:"out_refund_no,omitempty"`
 	DeviceInfo    string `json:"device_info,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty"`
-	OutRefundNo   string `json:"out_refund_no,omitempty"`
 	TotalFee      int64  `json:"total_fee,omitempty"`  //int64
 	RefundFee     int64  `json:"refund_fee,omitempty"` //int64
 
@@ -85,11 +85,11 @@ type reqReverseDto struct {
 }
 
 type reqCustomerDto struct {
-	Key      string `json:"key,omitempty"`
-	CertName string `json:"cert_name,omitempty"`
-	CertKey  string `json:"cert_key,omitempty"`
-	RootCa   string `json:"root_ca,omitempty"`
-	SignType string `json:"sign_type,omitempty"`
+	Key          string `json:"key,omitempty"`
+	CertPathName string `json:"cert_path_name,omitempty"`
+	CertPathKey  string `json:"cert_path_key,omitempty"`
+	RootCa       string `json:"root_ca,omitempty"`
+	SignType     string `json:"sign_type,omitempty"`
 }
 
 //response
