@@ -3,9 +3,10 @@ package wxpay
 import (
 	"flag"
 	"fmt"
-	"kit/test"
 	"os"
 	"testing"
+
+	"github.com/relax-space/go-kit/test"
 )
 
 var (
