@@ -41,7 +41,7 @@ func Test_Pay(t *testing.T) {
 		}
 		test.Ok(t, err)
 	}
-	fmt.Printf("%+v", result)
+	//fmt.Printf("%+v", result)
 	test.Ok(t, err)
 
 }
@@ -62,7 +62,7 @@ func Test_Query(t *testing.T) {
 	test.Ok(t, err)
 }
 
-func Test_refund(t *testing.T) {
+func Test_Refund(t *testing.T) {
 	reqDto := reqRefundDto{
 		reqBaseDto: reqBaseDto{
 			AppId: *appId,
@@ -78,6 +78,25 @@ func Test_refund(t *testing.T) {
 		RootCa:       fmt.Sprintf("c:/cert/%v/rootca.pem", *mchId),
 	}
 	result, err := Refund(reqDto, custDto)
+	fmt.Printf("%+v", result)
+	test.Ok(t, err)
+}
+
+func Test_Reverse(t *testing.T) {
+	reqDto := reqReverseDto{
+		reqBaseDto: reqBaseDto{
+			AppId: *appId,
+			MchId: *mchId,
+		},
+		OutTradeNo: "1417084862106336446985",
+	}
+	custDto := reqCustomerDto{
+		Key:          *key,
+		CertPathName: fmt.Sprintf("c:/cert/%v/apiclient_cert.pem", *mchId),
+		CertPathKey:  fmt.Sprintf("c:/cert/%v/apiclient_key.pem", *mchId),
+		RootCa:       fmt.Sprintf("c:/cert/%v/rootca.pem", *mchId),
+	}
+	result, err := Reverse(reqDto, custDto, 10, 10)
 	fmt.Printf("%+v", result)
 	test.Ok(t, err)
 }

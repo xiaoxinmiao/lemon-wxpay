@@ -149,3 +149,49 @@ func Refund(reqDto reqRefundDto, custDto reqCustomerDto) (result map[string]inte
 	result, err = RespParse(body, custDto.Key)
 	return
 }
+
+func Reverse(reqDto reqReverseDto, custDto reqCustomerDto, count int, interval int) (result map[string]interface{}, err error) {
+	if count <= 0 {
+		err = errors.New("The count of reverse must be greater than 0")
+		return
+	}
+	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+
+	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
+	SetValue(wxPayData, "out_trade_no", reqDto.OutTradeNo)
+
+	signStr := base.JoinMapObject(wxPayData.DataAttr)
+	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
+	tr, err := httpreq.CertTransport(custDto.CertPathName, custDto.CertPathKey, custDto.RootCa)
+	if err != nil {
+		err = errors.New("Certificate verification failed")
+		return
+	}
+	_, body, err := httpreq.NewPost(URLREVERSE, []byte(wxPayData.ToXml()), &httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, tr)
+	if err != nil {
+		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
+		return
+	}
+	result, err = RespParse(body, custDto.Key)
+	if err != nil {
+		return
+	}
+	recallObj, ok := result["recall"]
+	if !ok {
+		err = errors.New("reverse failure")
+		return
+	}
+
+	recall := recallObj.(string)
+	if recall == "Y" {
+		time.Sleep(time.Duration(interval) * time.Second) //10s
+		count = count - 1
+		return Reverse(reqDto, custDto, count, interval)
+	} else if recall == "N" {
+		return
+	} else {
+		err = errors.New("reverse failure")
+	}
+
+	return
+}
