@@ -41,7 +41,7 @@ const (
 	URLPREPAY  = "https://api.mch.weixin.qq.com/pay/unifiedorder"
 )
 
-func BuildCommonparam(baseDto reqBaseDto) *data.Data {
+func BuildCommonparam(baseDto ReqBaseDto) *data.Data {
 	data := data.NewDataObj()
 	SetValue(data, "appid", baseDto.AppId)
 	SetValue(data, "sub_appid", baseDto.SubAppId)

@@ -16,8 +16,8 @@ var (
 )
 
 func Test_Pay(t *testing.T) {
-	reqDto := reqPayDto{
-		reqBaseDto: reqBaseDto{
+	reqDto := ReqPayDto{
+		ReqBaseDto: ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
@@ -25,14 +25,14 @@ func Test_Pay(t *testing.T) {
 		Body:     "xiaoxinmiao test",
 		TotalFee: 1,
 	}
-	customDto := reqCustomerDto{
+	customDto := ReqCustomerDto{
 		Key: *key,
 	}
 	result, err := Pay(reqDto, customDto)
 	if err != nil {
 		if err.Error() == "MESSAGE_PAYING" {
-			dto := reqQueryDto{
-				reqBaseDto: reqDto.reqBaseDto,
+			dto := ReqQueryDto{
+				ReqBaseDto: reqDto.ReqBaseDto,
 				OutTradeNo: result["out_trade_no"].(string),
 			}
 			queryResult, err := LoopQuery(dto, customDto, 40, 2)
@@ -48,14 +48,14 @@ func Test_Pay(t *testing.T) {
 }
 
 func Test_Query(t *testing.T) {
-	reqDto := reqQueryDto{
-		reqBaseDto: reqBaseDto{
+	reqDto := ReqQueryDto{
+		ReqBaseDto: ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
 		OutTradeNo: "14201711085205823413229775520",
 	}
-	custDto := reqCustomerDto{
+	custDto := ReqCustomerDto{
 		Key: *key,
 	}
 	result, err := Query(reqDto, custDto)
@@ -64,15 +64,15 @@ func Test_Query(t *testing.T) {
 }
 
 func Test_Refund(t *testing.T) {
-	reqDto := reqRefundDto{
-		reqBaseDto: reqBaseDto{
+	reqDto := ReqRefundDto{
+		ReqBaseDto: ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
 		OutTradeNo: "14201711085205823413229775520",
 		RefundFee:  1,
 	}
-	custDto := reqCustomerDto{
+	custDto := ReqCustomerDto{
 		Key:          *key,
 		CertPathName: fmt.Sprintf("c:/cert/%v/apiclient_cert.pem", *mchId),
 		CertPathKey:  fmt.Sprintf("c:/cert/%v/apiclient_key.pem", *mchId),
@@ -84,14 +84,14 @@ func Test_Refund(t *testing.T) {
 }
 
 func Test_Reverse(t *testing.T) {
-	reqDto := reqReverseDto{
-		reqBaseDto: reqBaseDto{
+	reqDto := ReqReverseDto{
+		ReqBaseDto: ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
 		OutTradeNo: "1417084862106336446985",
 	}
-	custDto := reqCustomerDto{
+	custDto := ReqCustomerDto{
 		Key:          *key,
 		CertPathName: fmt.Sprintf("c:/cert/%v/apiclient_cert.pem", *mchId),
 		CertPathKey:  fmt.Sprintf("c:/cert/%v/apiclient_key.pem", *mchId),

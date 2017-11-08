@@ -14,7 +14,7 @@ import (
 	"github.com/relax-space/go-kit/sign"
 )
 
-func LoopQuery(reqDto reqQueryDto, custDto reqCustomerDto, limit, interval int) (queryResult map[string]interface{}, err error) {
+func LoopQuery(reqDto ReqQueryDto, custDto ReqCustomerDto, limit, interval int) (queryResult map[string]interface{}, err error) {
 	count := limit / interval
 	waitTime := time.Duration(interval) * time.Second //2s
 	for index := 0; index < count; index++ {
@@ -43,8 +43,8 @@ func LoopQuery(reqDto reqQueryDto, custDto reqCustomerDto, limit, interval int) 
 	return
 }
 
-func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
-	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+func Pay(reqDto ReqPayDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	outTradeNo := reqDto.OutTradeNo
 	if len(outTradeNo) == 0 {
@@ -83,8 +83,8 @@ func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{
 	}
 	return
 }
-func Query(reqDto reqQueryDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
-	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+func Query(reqDto ReqQueryDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
 	SetValue(wxPayData, "out_trade_no", reqDto.OutTradeNo)
@@ -103,10 +103,10 @@ func Query(reqDto reqQueryDto, custDto reqCustomerDto) (result map[string]interf
 	return
 }
 
-func Refund(reqDto reqRefundDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
-	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+func Refund(reqDto ReqRefundDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 	//query
-	queryDto := reqQueryDto{reqBaseDto: reqDto.reqBaseDto, OutTradeNo: reqDto.OutTradeNo}
+	queryDto := ReqQueryDto{ReqBaseDto: reqDto.ReqBaseDto, OutTradeNo: reqDto.OutTradeNo}
 	queryResult, err := Query(queryDto, custDto)
 	if err != nil {
 		err = errors.New("refund failure")
@@ -148,12 +148,12 @@ func Refund(reqDto reqRefundDto, custDto reqCustomerDto) (result map[string]inte
 	return
 }
 
-func Reverse(reqDto reqReverseDto, custDto reqCustomerDto, count int, interval int) (result map[string]interface{}, err error) {
+func Reverse(reqDto ReqReverseDto, custDto ReqCustomerDto, count int, interval int) (result map[string]interface{}, err error) {
 	if count <= 0 {
 		err = errors.New("The count of reverse must be greater than 0")
 		return
 	}
-	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
 	SetValue(wxPayData, "out_trade_no", reqDto.OutTradeNo)
