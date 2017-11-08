@@ -7,8 +7,7 @@ type reqBaseDto struct {
 	SubMchId string `json:"sub_mch_id,omitempty"`
 	NonceStr string `json:"nonce_str,omitempty"`
 
-	Sign       string `json:"sign,omitempty"`
-	OutTradeNo string `json:"out_trade_no,omitempty"`
+	Sign string `json:"sign,omitempty"`
 }
 
 type reqPayDto struct {
@@ -25,7 +24,8 @@ type reqPayDto struct {
 	LimitPay       string `json:"limit_pay,omitempty"`
 	AuthCode       string `json:"auth_code,omitempty"` //10,11,12,13,14,15
 
-	SceneInfo sceneInfoDto `json:"scene_info,omitempty"`
+	OutTradeNo string       `json:"out_trade_no,omitempty"`
+	SceneInfo  sceneInfoDto `json:"scene_info,omitempty"`
 }
 
 type reqPrePayDto struct {
@@ -48,6 +48,7 @@ type reqPrePayDto struct {
 	OpenId    string
 	SubOpenId string
 
+	OutTradeNo     string `json:"out_trade_no,omitempty"`
 	SceneInfo      sceneInfoDto
 	SpbillCreateIp string
 }
@@ -61,6 +62,7 @@ type sceneInfoDto struct {
 
 type reqQueryDto struct {
 	reqBaseDto
+	OutTradeNo    string `json:"out_trade_no,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty"`
 }
 
@@ -74,10 +76,12 @@ type reqRefundDto struct {
 
 	RefundFeeType string `json:"refund_fee_type,omitempty"`
 	RefundAccount string `json:"refund_account,omitempty"`
+	OutTradeNo    string `json:"out_trade_no,omitempty"`
 }
 type reqReverseDto struct {
 	reqBaseDto
 	TransactionId string `json:"transaction_id,omitempty"`
+	OutTradeNo    string `json:"out_trade_no,omitempty"`
 }
 
 type reqCustomerDto struct {

@@ -73,12 +73,13 @@ func RespParse(bodyByte []byte, key string) (result map[string]interface{}, err 
 			return
 		}
 	}
-
 	if !data.IsSet("sign") {
 		err = errors.New("Signature verification failed")
 		return
 	}
-	if sign.CheckSign(base.JoinMapObject(data.DataAttr), key, data.DataAttr["sign"].(string)) == false {
+	wxSign := data.DataAttr["sign"].(string)
+	delete(data.DataAttr, "sign")
+	if sign.CheckSign(base.JoinMapObject(data.DataAttr), key, wxSign) == false {
 		err = errors.New("Signature verification failed")
 		return
 	}

@@ -19,22 +19,23 @@ func LoopQuery(reqDto reqQueryDto, custDto reqCustomerDto, limit, interval int) 
 	waitTime := time.Duration(interval) * time.Second //2s
 	for index := 0; index < count; index++ {
 		queryResult, err = Query(reqDto, custDto)
+		fmt.Printf("%+v", queryResult)
 		if err == nil { // 1. query success
 			tradeStatusObj, ok := queryResult["trade_state"]
 			if !ok {
 				continue
 			}
 			tradeStatus := tradeStatusObj.(string)
-
+			fmt.Println(tradeStatus)
 			switch {
-			case tradeStatus == "TRADE_SUCCESS":
+			case tradeStatus == "SUCCESS":
 				return
-			case tradeStatus == "WAIT_BUYER_PAY":
+			case tradeStatus == "USERPAYING":
 				if index < count {
 					time.Sleep(waitTime)
 					continue
 				}
-			case tradeStatus == "TRADE_CLOSED" || tradeStatus == "TRADE_FINISHED":
+			case tradeStatus == "CLOSED" || tradeStatus == "REFUND"|| tradeStatus == "REVOKED"|| tradeStatus == "NOTPAY"|| tradeStatus == "PAYERROR":
 				err = errors.New("wechat pay failure")
 				return
 			}
@@ -44,12 +45,15 @@ func LoopQuery(reqDto reqQueryDto, custDto reqCustomerDto, limit, interval int) 
 	return
 }
 
-func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{}, baseDto reqBaseDto, err error) {
-	baseDto = reqDto.reqBaseDto
-
+func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.reqBaseDto)
+	outTradeNo := reqDto.OutTradeNo
+
 	SetValue(wxPayData, "body", reqDto.Body)
-	SetValue(wxPayData, "out_trade_no", random.Uuid(OUTTRADENO))
+	if len(outTradeNo) == 0 {
+		outTradeNo = random.Uuid(OUTTRADENO)
+		SetValue(wxPayData, "out_trade_no", outTradeNo)
+	}
 	SetValue(wxPayData, "total_fee", reqDto.TotalFee)
 	SetValue(wxPayData, "auth_code", reqDto.AuthCode)
 	SetValue(wxPayData, "device_info", reqDto.DeviceInfo)
@@ -74,6 +78,9 @@ func Pay(reqDto reqPayDto, custDto reqCustomerDto) (result map[string]interface{
 	}
 	result, err = RespParse(body, custDto.Key)
 	if err != nil {
+		if err.Error() == MESSAGE_PAYING {
+			result = map[string]interface{}{"out_trade_no": outTradeNo}
+		}
 		return
 	}
 	return
