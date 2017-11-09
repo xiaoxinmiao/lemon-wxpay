@@ -13,7 +13,7 @@ go get github.com/relax-space/lemon-wxpay
 > reverse
 
 ### pay
-```js
+```go
 	reqDto := wxpay.ReqPayDto{
 		ReqBaseDto: wxpay.ReqBaseDto{
 			AppId: "****",
@@ -31,7 +31,7 @@ go get github.com/relax-space/lemon-wxpay
 ```
 
 ### query
-```js
+```go
 	reqDto := wxpay.ReqQueryDto{
 		ReqBaseDto: wxpay.ReqBaseDto{
 			AppId: "****",
@@ -47,7 +47,7 @@ go get github.com/relax-space/lemon-wxpay
 ```
 
 ### refund
-```js
+```go
 	reqDto := wxpay.ReqRefundDto{
 		ReqBaseDto: wxpay.ReqBaseDto{
 			AppId: "****",
@@ -67,7 +67,7 @@ go get github.com/relax-space/lemon-wxpay
 ```
 
 ### reverse
-```js
+```go
 	reqDto := wxpay.ReqReverseDto{
 		ReqBaseDto: wxpay.ReqBaseDto{
 			AppId: "****",
