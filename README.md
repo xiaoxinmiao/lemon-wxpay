@@ -26,7 +26,7 @@ go get github.com/relax-space/lemon-wxpay
 	customDto := wxpay.ReqCustomerDto{
 		Key: "****",
 	}
-	result, err := wxpay.Pay(reqDto, customDto)
+    result, err := wxpay.Pay(reqDto, customDto)
     fmt.Printf("%+v,%v", result,err)
 ```
 
@@ -42,7 +42,7 @@ go get github.com/relax-space/lemon-wxpay
 	customDto := wxpay.ReqCustomerDto{
 		Key: "****",
 	}
-	result, err := wxpay.Query(reqDto, customDto)
+    result, err := wxpay.Query(reqDto, customDto)
     fmt.Printf("%+v,%v", result,err)
 ```
 
@@ -62,7 +62,7 @@ go get github.com/relax-space/lemon-wxpay
 		CertPathKey:  "c:/cert/apiclient_key.pem",
 		RootCa:       "c:/cert/rootca.pem"),
 	}
-	result, err := wxpay.Refund(reqDto, customDto)
+    result, err := wxpay.Refund(reqDto, customDto)
     fmt.Printf("%+v,%v", result,err)
 ```
 
@@ -81,7 +81,7 @@ go get github.com/relax-space/lemon-wxpay
 		CertPathKey:  "c:/cert/apiclient_key.pem",
 		RootCa:       "c:/cert/rootca.pem"),
 	}
-	result, err := wxpay.Reverse(reqDto, customDto)
+    result, err := wxpay.Reverse(reqDto, customDto)
     fmt.Printf("%+v,%v", result,err)
 ```
 
