@@ -83,6 +83,14 @@ type ReqReverseDto struct {
 	TransactionId string `json:"transaction_id,omitempty"`
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 }
+type ReqRefundQueryDto struct {
+	ReqBaseDto
+	TransactionId string `json:"transaction_id,omitempty"`
+	OutTradeNo    string `json:"out_trade_no,omitempty"`
+	OutRefundNo   string `json:"out_refund_no,omitempty"`
+	RefundId      string `json:"refund_id,omitempty"`
+	Offset        int    `json:"offset,omitempty"`
+}
 
 type ReqCustomerDto struct {
 	Key          string `json:"key,omitempty"`
@@ -260,4 +268,16 @@ type NotifyDto struct {
 	ReturnMsg     string `xml:"return_msg,omitempty"`
 
 	TimeEnd string `xml:"time_end,omitempty"`
+}
+
+type RespRefundQueryDto struct {
+	TransactionId      string `json:"transaction_id;omitempty"`
+	OutTradeNo         string `json:"out_trade_no;omitempty"`
+	TotalFee           int64  `json:"total_fee;omitempty"`
+	SettlementTotalFee int64  `json:"settlement_total_fee;omitempty"`
+	FeeType            string `json:"fee_type;omitempty"`
+
+	CashFee          string `json:"cash_fee;omitempty"`
+	RefundCount      string `json:"refund_count;omitempty"`
+	TotalRefundCount string `json:"total_refund_count;omitempty"`
 }

@@ -101,3 +101,19 @@ func Test_Reverse(t *testing.T) {
 	fmt.Printf("%+v", result)
 	test.Ok(t, err)
 }
+
+func Test_RefundQuery(t *testing.T) {
+	reqDto := ReqRefundQueryDto{
+		ReqBaseDto: ReqBaseDto{
+			AppId: *appId,
+			MchId: *mchId,
+		},
+		OutTradeNo: "144650782494807835413",
+	}
+	custDto := ReqCustomerDto{
+		Key: *key,
+	}
+	result, err := RefundQuery(reqDto, custDto)
+	fmt.Printf("%+v", result)
+	test.Ok(t, err)
+}

@@ -34,11 +34,12 @@ const (
 )
 
 const (
-	URLPAY     = "https://api.mch.weixin.qq.com/pay/micropay"
-	URLREVERSE = "https://api.mch.weixin.qq.com/secapi/pay/reverse"
-	URLREFUND  = "https://api.mch.weixin.qq.com/secapi/pay/refund"
-	URLQUERY   = "https://api.mch.weixin.qq.com/pay/orderquery"
-	URLPREPAY  = "https://api.mch.weixin.qq.com/pay/unifiedorder"
+	URLPAY         = "https://api.mch.weixin.qq.com/pay/micropay"
+	URLREVERSE     = "https://api.mch.weixin.qq.com/secapi/pay/reverse"
+	URLREFUND      = "https://api.mch.weixin.qq.com/secapi/pay/refund"
+	URLQUERY       = "https://api.mch.weixin.qq.com/pay/orderquery"
+	URLPREPAY      = "https://api.mch.weixin.qq.com/pay/unifiedorder"
+	URLREFUNDQUERY = "https://api.mch.weixin.qq.com/pay/refundquery"
 )
 
 func BuildCommonparam(baseDto ReqBaseDto) *data.Data {
