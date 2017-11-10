@@ -197,3 +197,26 @@ func Reverse(reqDto ReqReverseDto, custDto ReqCustomerDto, count int, interval i
 
 	return
 }
+
+func RefundQuery(reqDto ReqRefundQueryDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
+
+	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
+	SetValue(wxPayData, "out_trade_no", reqDto.OutTradeNo)
+	SetValue(wxPayData, "out_refund_no", reqDto.OutRefundNo)
+	SetValue(wxPayData, "refund_id", reqDto.RefundId)
+	SetValue(wxPayData, "offset", reqDto.Offset)
+
+	signStr := base.JoinMapObject(wxPayData.DataAttr)
+	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
+	_, body, err := httpreq.NewPost(URLREFUNDQUERY, []byte(wxPayData.ToXml()),
+		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
+	if err != nil {
+		return
+	}
+	result, err = RespParse(body, custDto.Key)
+	if err != nil {
+		return
+	}
+	return
+}
