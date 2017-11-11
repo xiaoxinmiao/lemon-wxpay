@@ -30,27 +30,28 @@ type ReqPayDto struct {
 
 type ReqPrePayDto struct {
 	ReqBaseDto
-	Body       string
-	Detail     string
-	Attach     string
-	DeviceInfo string
-	FeeType    string
+	SignType   string `json:"sign_type,omitempty"`
+	Body       string `json:"body,omitempty"`
+	Detail     string `json:"detail,omitempty"`
+	Attach     string `json:"attach,omitempty"`
+	DeviceInfo string `json:"device_info,omitempty"`
 
-	TotalFee   string
-	TimeStart  string
-	TimeExpire string
-	GoodsTag   string
-	NotifyUrl  string
+	FeeType        string `json:"fee_type,omitempty"`
+	TotalFee       int64  `json:"total_fee,omitempty"`
+	SpbillCreateIp string `json:"spbill_create_ip,omitempty"`
+	TimeStart      string `json:"time_start,omitempty"`
+	TimeExpire     string `json:"time_expire,omitempty"`
 
-	TradeType string
-	ProductId string
-	LimitPay  string
-	OpenId    string
-	SubOpenId string
+	GoodsTag  string `json:"goods_tag,omitempty"`
+	NotifyUrl string `json:"notify_url,omitempty"`
+	TradeType string `json:"trade_type,omitempty"`
+	ProductId string `json:"product_id,omitempty"`
+	LimitPay  string `json:"limit_pay,omitempty"`
 
-	OutTradeNo     string `json:"out_trade_no,omitempty"`
-	SceneInfo      SceneInfoDto
-	SpbillCreateIp string
+	OpenId     string       `json:"openid,omitempty"`
+	SubOpenId  string       `json:"sub_openid,omitempty"`
+	OutTradeNo string       `json:"out_trade_no,omitempty"`
+	SceneInfo  SceneInfoDto `json:"scene_info,omitempty"`
 }
 
 type SceneInfoDto struct {
@@ -93,11 +94,11 @@ type ReqRefundQueryDto struct {
 }
 
 type ReqCustomerDto struct {
-	Key          string `json:"key,omitempty"`
-	CertPathName string `json:"cert_path_name,omitempty"`
-	CertPathKey  string `json:"cert_path_key,omitempty"`
-	RootCa       string `json:"root_ca,omitempty"`
-	SignType     string `json:"sign_type,omitempty"`
+	Key              string `json:"key,omitempty"`
+	CertPathName     string `json:"cert_path_name,omitempty"`
+	CertPathKey      string `json:"cert_path_key,omitempty"`
+	RootCa           string `json:"root_ca,omitempty"`
+	UnifiedNotifyUrl string `json:"unified_notify_url,omitempty"`
 }
 
 //response

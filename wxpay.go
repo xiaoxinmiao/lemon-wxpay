@@ -1,6 +1,8 @@
 package wxpay
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"strings"
@@ -8,6 +10,7 @@ import (
 
 	"github.com/relax-space/go-kit/random"
 
+	"github.com/relax-space/go-kit/data"
 	"github.com/relax-space/go-kit/httpreq"
 
 	"github.com/relax-space/go-kit/base"
@@ -219,4 +222,96 @@ func RefundQuery(reqDto ReqRefundQueryDto, custDto ReqCustomerDto) (result map[s
 		return
 	}
 	return
+}
+
+func PrePay(reqDto ReqPrePayDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
+	if len(reqDto.OutTradeNo) == 0 {
+		SetValue(wxPayData, "out_trade_no", random.Uuid(PRE_PREOUTTRADENO))
+	} else {
+		SetValue(wxPayData, "out_trade_no", reqDto.OutTradeNo)
+	}
+
+	if len(reqDto.SpbillCreateIp) == 0 {
+		SetValue(wxPayData, "spbill_create_ip", reqDto.SpbillCreateIp)
+	} else {
+		SetValue(wxPayData, "spbill_create_ip", "8.8.8.8")
+	}
+
+	SetValue(wxPayData, "sign_type", reqDto.SignType)
+	SetValue(wxPayData, "body", reqDto.Body)
+	SetValue(wxPayData, "detail", reqDto.Detail)
+	SetValue(wxPayData, "attach", reqDto.Attach)
+	SetValue(wxPayData, "device_info", reqDto.DeviceInfo)
+	SetValue(wxPayData, "fee_type", reqDto.FeeType)
+
+	SetValue(wxPayData, "total_fee", reqDto.TotalFee)
+
+	SetValue(wxPayData, "time_start", base.GetDateFormat(base.GetChinaTime(time.Now()), 121))
+	SetValue(wxPayData, "time_expire", base.GetDateFormat(base.GetChinaTime(time.Now().Add(time.Minute*10)), 121))
+	SetValue(wxPayData, "goods_tag", reqDto.GoodsTag)
+
+	if len(reqDto.NotifyUrl) != 0 {
+		SetValue(wxPayData, "notify_url", reqDto.NotifyUrl)
+	} else {
+		SetValue(wxPayData, "notify_url", custDto.UnifiedNotifyUrl)
+	}
+	SetValue(wxPayData, "trade_type", reqDto.TradeType)
+	SetValue(wxPayData, "product_id", reqDto.ProductId)
+	SetValue(wxPayData, "limit_pay", reqDto.LimitPay)
+	SetValue(wxPayData, "openid", reqDto.OpenId)
+	SetValue(wxPayData, "sub_openid", reqDto.SubOpenId)
+
+	SetValue(wxPayData, "scene_info", reqDto.SceneInfo)
+	signStr := base.JoinMapObject(wxPayData.DataAttr)
+	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
+	_, body, err := httpreq.NewPost(URLPREPAY, []byte(wxPayData.ToXml()), &httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
+	if err != nil {
+		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
+		return
+	}
+	result, err = RespParse(body, custDto.Key)
+	return
+}
+
+func NotifyForPrePay(xmlBody string) (result interface{}, err error) {
+	dataObj := data.New()
+	err = dataObj.FromXml(xmlBody)
+	if err != nil {
+		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
+		return
+	}
+
+	if !dataObj.IsSet("attach") {
+		err = errors.New("notify_url is required in attach,but attach is empty")
+		return
+	}
+	var attachObj struct {
+		NotifyUrl string `json:"NotifyUrl"`
+	}
+	err = json.Unmarshal([]byte(dataObj.DataAttr["attach"].(string)), attachObj)
+	if err != nil {
+		err = errors.New("attach's format is expected to json")
+		return
+	}
+	if !dataObj.IsSet("notify_url") {
+		err = errors.New("notify_url is missing in attach")
+		return
+	}
+	_, err = httpreq.POST("", attachObj.NotifyUrl, dataObj.DataAttr, nil)
+	if err != nil {
+		return
+	}
+	type SuccessResult struct {
+		XMLName    xml.Name `xml:"xml"`
+		ReturnCode string   `xml:"return_code"`
+		ReturnMsg  string   `xml:"return_msg"`
+	}
+	successResult := &SuccessResult{
+		ReturnCode: "SUCCESS",
+		ReturnMsg:  "OK",
+	}
+	result = successResult
+	return
+
 }

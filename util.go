@@ -34,6 +34,12 @@ const (
 )
 
 const (
+	PREPAY_TYPE_JSAPI  = "JSAPI"
+	PREPAY_TYPE_NATIVE = "NATIVE"
+	PREPAY_TYPE_APP    = "APP"
+)
+
+const (
 	URLPAY         = "https://api.mch.weixin.qq.com/pay/micropay"
 	URLREVERSE     = "https://api.mch.weixin.qq.com/secapi/pay/reverse"
 	URLREFUND      = "https://api.mch.weixin.qq.com/secapi/pay/refund"
@@ -43,7 +49,7 @@ const (
 )
 
 func BuildCommonparam(baseDto ReqBaseDto) *data.Data {
-	data := data.NewDataObj()
+	data := data.New()
 	SetValue(data, "appid", baseDto.AppId)
 	SetValue(data, "sub_appid", baseDto.SubAppId)
 	SetValue(data, "mch_id", baseDto.MchId)
@@ -59,7 +65,7 @@ func SetValue(data *data.Data, key string, value interface{}) {
 }
 
 func RespParse(bodyByte []byte, key string) (result map[string]interface{}, err error) {
-	data := data.NewDataObj()
+	data := data.New()
 	err = data.FromXml(string(bodyByte))
 	if err != nil {
 		return
