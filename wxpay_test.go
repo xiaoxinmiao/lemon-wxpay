@@ -117,3 +117,23 @@ func Test_RefundQuery(t *testing.T) {
 	fmt.Printf("%+v", result)
 	test.Ok(t, err)
 }
+
+func Test_PrePay(t *testing.T) {
+	reqDto := ReqPrePayDto{
+		ReqBaseDto: ReqBaseDto{
+			AppId: *appId,
+			MchId: *mchId,
+		},
+		Body:      "xiaomiao test",
+		TotalFee:  1,
+		TradeType: PREPAY_TYPE_JSAPI,
+		NotifyUrl: "https://xiaomiao.com",
+		OpenId:    "os2u9uPKLkCKL08FwCM6hQAQ_LtI",
+	}
+	custDto := ReqCustomerDto{
+		Key: *key,
+	}
+	result, err := PrePay(reqDto, custDto)
+	fmt.Printf("%+v", result)
+	test.Ok(t, err)
+}
