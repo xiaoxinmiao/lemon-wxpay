@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/relax-space/go-kit/data"
 	"github.com/relax-space/go-kit/random"
 
-	"github.com/relax-space/go-kit/data"
 	"github.com/relax-space/go-kit/httpreq"
 
 	"github.com/relax-space/go-kit/base"
@@ -274,7 +274,9 @@ func PrePay(reqDto ReqPrePayDto, custDto ReqCustomerDto) (result map[string]inte
 	return
 }
 
-func NotifyForPrePay(xmlBody string) (result interface{}, err error) {
+//sub_notify_url maybe exist in attach,
+//if sub_notify_url exist,then redirect to sub_notify_url
+func Notify(xmlBody string) (result interface{}, err error) {
 	dataObj := data.New()
 	err = dataObj.FromXml(xmlBody)
 	if err != nil {
@@ -282,36 +284,24 @@ func NotifyForPrePay(xmlBody string) (result interface{}, err error) {
 		return
 	}
 
-	if !dataObj.IsSet("attach") {
-		err = errors.New("notify_url is required in attach,but attach is empty")
-		return
-	}
-	var attachObj struct {
-		NotifyUrl string `json:"NotifyUrl"`
-	}
-	err = json.Unmarshal([]byte(dataObj.DataAttr["attach"].(string)), attachObj)
-	if err != nil {
-		err = errors.New("attach's format is expected to json")
-		return
-	}
-	if !dataObj.IsSet("notify_url") {
-		err = errors.New("notify_url is missing in attach")
-		return
-	}
-	_, err = httpreq.POST("", attachObj.NotifyUrl, dataObj.DataAttr, nil)
-	if err != nil {
-		return
-	}
-	type SuccessResult struct {
+	result = struct {
 		XMLName    xml.Name `xml:"xml"`
 		ReturnCode string   `xml:"return_code"`
 		ReturnMsg  string   `xml:"return_msg"`
-	}
-	successResult := &SuccessResult{
-		ReturnCode: "SUCCESS",
-		ReturnMsg:  "OK",
-	}
-	result = successResult
-	return
+	}{xml.Name{}, "SUCCESS", "OK"}
 
+	if !dataObj.IsSet("attach") {
+		return
+	}
+	var attachObj struct {
+		SubNotifyUrl string `json:"sub_notify_url"`
+	}
+	err = json.Unmarshal([]byte(dataObj.DataAttr["attach"].(string)), &attachObj)
+	if err != nil {
+		return
+	}
+	if len(attachObj.SubNotifyUrl) != 0 {
+		_, err = httpreq.POST("", attachObj.SubNotifyUrl, dataObj.DataAttr, nil)
+	}
+	return
 }
