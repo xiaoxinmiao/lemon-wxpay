@@ -7,8 +7,8 @@ import (
 
 	"github.com/relax-space/go-kit/base"
 	"github.com/relax-space/go-kit/data"
-	"github.com/relax-space/go-kit/random"
 	"github.com/relax-space/go-kit/sign"
+	"github.com/relax-space/go-kitt/random"
 )
 
 //wechat const
