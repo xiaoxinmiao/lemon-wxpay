@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/relax-space/go-kit/data"
-	"github.com/relax-space/go-kit/random"
+	"github.com/relax-space/go-kitt/random"
 
 	"github.com/relax-space/go-kit/httpreq"
 
