@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/relax-space/go-kitt/mapstruct"
+
 	"github.com/relax-space/go-kit/data"
 	"github.com/relax-space/go-kitt/random"
 
@@ -275,28 +277,31 @@ func PrePay(reqDto ReqPrePayDto, custDto ReqCustomerDto) (result map[string]inte
 
 //sub_notify_url maybe exist in attach,
 //if sub_notify_url exist,then redirect to sub_notify_url
-func Notify(xmlBody string) (result interface{}, err error) {
+func Notify(xmlBody string) (result NotifyDto, mResult map[string]interface{}, err error) {
 	dataObj := data.New()
 	err = dataObj.FromXml(xmlBody)
 	if err != nil {
 		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
 		return
 	}
+	mResult = dataObj.DataAttr
+	err = mapstruct.Decode(mResult, &result)
+	if err != nil {
+		return
+	}
 
-	result = dataObj.DataAttr
-
-	if !dataObj.IsSet("attach") {
+	if len(result.Attach) == 0 {
 		return
 	}
 	var attachObj struct {
 		SubNotifyUrl string `json:"sub_notify_url"`
 	}
-	err = json.Unmarshal([]byte(dataObj.DataAttr["attach"].(string)), &attachObj)
+	err = json.Unmarshal([]byte(result.Attach), &attachObj)
 	if err != nil {
 		return
 	}
 	if len(attachObj.SubNotifyUrl) != 0 {
-		_, err = httpreq.POST("", attachObj.SubNotifyUrl, dataObj.DataAttr, nil)
+		_, err = httpreq.POST("", attachObj.SubNotifyUrl, mResult, nil)
 	}
 	return
 }

@@ -154,7 +154,7 @@ func Test_Notify(t *testing.T) {
 	<sign><![CDATA[B552ED6B279343CB493C5DD0D78AB241]]></sign>
 	<sub_mch_id><![CDATA[10000100]]></sub_mch_id>
 	<time_end><![CDATA[20140903131540]]></time_end>
-	<total_fee>1</total_fee>
+	<total_fee>2</total_fee>
 	<trade_type><![CDATA[JSAPI]]></trade_type>
 	<transaction_id><![CDATA[1004400740201409030005092168]]></transaction_id>
  </xml>`
