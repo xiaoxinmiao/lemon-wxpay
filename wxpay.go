@@ -2,7 +2,6 @@ package wxpay
 
 import (
 	"encoding/json"
-	"encoding/xml"
 	"errors"
 	"fmt"
 	"strings"
@@ -284,11 +283,7 @@ func Notify(xmlBody string) (result interface{}, err error) {
 		return
 	}
 
-	result = struct {
-		XMLName    xml.Name `xml:"xml"`
-		ReturnCode string   `xml:"return_code"`
-		ReturnMsg  string   `xml:"return_msg"`
-	}{xml.Name{}, "SUCCESS", "OK"}
+	result = dataObj.DataAttr
 
 	if !dataObj.IsSet("attach") {
 		return
