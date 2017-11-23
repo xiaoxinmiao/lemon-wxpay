@@ -238,37 +238,37 @@ type RespPrePayDto struct {
 }
 
 type NotifyDto struct {
-	ReturnCode string `xml:"return_code,omitempty"`
-	AppId      string `xml:"appid,omitempty"`
-	MchId      string `xml:"mch_id,omitempty"`
-	DeviceInfo string `xml:"device_info,omitempty"`
-	NonceStr   string `xml:"nonce_str,omitempty"`
+	ReturnCode string `json:"return_code,omitempty"`
+	AppId      string `json:"appid,omitempty"`
+	MchId      string `json:"mch_id,omitempty"`
+	DeviceInfo string `json:"device_info,omitempty"`
+	NonceStr   string `json:"nonce_str,omitempty"`
 
-	Sign       string `xml:"sign,omitempty"`
-	SignType   string `xml:"sign_type,omitempty"`
-	ResultCode string `xml:"result_code,omitempty"`
-	ErrCode    string `xml:"err_code,omitempty"`
-	ErrCodeDes string `xml:"err_code_des,omitempty"`
+	Sign       string `json:"sign,omitempty"`
+	SignType   string `json:"sign_type,omitempty"`
+	ResultCode string `json:"result_code,omitempty"`
+	ErrCode    string `json:"err_code,omitempty"`
+	ErrCodeDes string `json:"err_code_des,omitempty"`
 
-	OpenId      string `xml:"openid,omitempty"`
-	IsSubscribe string `xml:"is_subscribe,omitempty"`
-	TradeType   string `xml:"trade_type,omitempty"`
-	BankType    string `xml:"bank_type,omitempty"`
-	TotalFee    string `xml:"total_fee,omitempty"`
+	OpenId      string `json:"openid,omitempty"`
+	IsSubscribe string `json:"is_subscribe,omitempty"`
+	TradeType   string `json:"trade_type,omitempty"`
+	BankType    string `json:"bank_type,omitempty"`
+	TotalFee    string `json:"total_fee,omitempty"`
 
-	SettlementTotalFee string `xml:"settlement_total_fee,omitempty"`
-	FeeType            string `xml:"fee_type,omitempty"`
-	CashFee            string `xml:"cash_fee,omitempty"`
-	CashFeeType        string `xml:"cash_fee_type,omitempty"`
-	CouponFee          string `xml:"coupon_fee,omitempty"`
+	SettlementTotalFee string `json:"settlement_total_fee,omitempty"`
+	FeeType            string `json:"fee_type,omitempty"`
+	CashFee            string `json:"cash_fee,omitempty"`
+	CashFeeType        string `json:"cash_fee_type,omitempty"`
+	CouponFee          string `json:"coupon_fee,omitempty"`
 
-	CouponCount   string `xml:"coupon_count,omitempty"`
-	TransactionId string `xml:"transaction_id,omitempty"`
-	OutTradeNo    string `xml:"out_trade_no,omitempty"`
-	Attach        string `xml:"attach,omitempty"`
-	ReturnMsg     string `xml:"return_msg,omitempty"`
+	CouponCount   string `json:"coupon_count,omitempty"`
+	TransactionId string `json:"transaction_id,omitempty"`
+	OutTradeNo    string `json:"out_trade_no,omitempty"`
+	Attach        string `json:"attach,omitempty"`
+	ReturnMsg     string `json:"return_msg,omitempty"`
 
-	TimeEnd string `xml:"time_end,omitempty"`
+	TimeEnd string `json:"time_end,omitempty"`
 }
 
 type RespRefundQueryDto struct {
