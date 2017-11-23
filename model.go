@@ -239,36 +239,39 @@ type RespPrePayDto struct {
 
 type NotifyDto struct {
 	ReturnCode string `json:"return_code,omitempty"`
+	ReturnMsg  string `json:"return_msg,omitempty"`
 	AppId      string `json:"appid,omitempty"`
 	MchId      string `json:"mch_id,omitempty"`
+	SubAppId   string `json:"sub_appid,omitempty"`
+
+	SubMchId   string `json:"sub_mch_id,omitempty"`
 	DeviceInfo string `json:"device_info,omitempty"`
 	NonceStr   string `json:"nonce_str,omitempty"`
-
 	Sign       string `json:"sign,omitempty"`
-	SignType   string `json:"sign_type,omitempty"`
 	ResultCode string `json:"result_code,omitempty"`
-	ErrCode    string `json:"err_code,omitempty"`
-	ErrCodeDes string `json:"err_code_des,omitempty"`
 
+	ErrCode     string `json:"err_code,omitempty"`
+	ErrCodeDes  string `json:"err_code_des,omitempty"`
 	OpenId      string `json:"openid,omitempty"`
 	IsSubscribe string `json:"is_subscribe,omitempty"`
-	TradeType   string `json:"trade_type,omitempty"`
-	BankType    string `json:"bank_type,omitempty"`
-	TotalFee    string `json:"total_fee,omitempty"`
+	SubOpenId   string `json:"sub_openid,omitempty"`
 
-	SettlementTotalFee string `json:"settlement_total_fee,omitempty"`
-	FeeType            string `json:"fee_type,omitempty"`
-	CashFee            string `json:"cash_fee,omitempty"`
+	SubIsSubscribe string `json:"sub_is_subscribe,omitempty"`
+	TradeType      string `json:"trade_type,omitempty"`
+	BankType       string `json:"bank_type,omitempty"`
+	TotalFee       int64  `json:"total_fee,omitempty"`
+	FeeType        string `json:"fee_type,omitempty"`
+
+	CashFee            int64  `json:"cash_fee,omitempty"`
 	CashFeeType        string `json:"cash_fee_type,omitempty"`
-	CouponFee          string `json:"coupon_fee,omitempty"`
+	SettlementTotalFee int64  `json:"settlement_total_fee,omitempty"`
+	CouponFee          int64  `json:"coupon_fee,omitempty"`
+	CouponCount        int64  `json:"coupon_count,omitempty"`
 
-	CouponCount   string `json:"coupon_count,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty"`
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 	Attach        string `json:"attach,omitempty"`
-	ReturnMsg     string `json:"return_msg,omitempty"`
-
-	TimeEnd string `json:"time_end,omitempty"`
+	TimeEnd       string `json:"time_end,omitempty"`
 }
 
 type RespRefundQueryDto struct {
