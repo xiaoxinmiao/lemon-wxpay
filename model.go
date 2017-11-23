@@ -259,14 +259,14 @@ type NotifyDto struct {
 	SubIsSubscribe string `json:"sub_is_subscribe,omitempty"`
 	TradeType      string `json:"trade_type,omitempty"`
 	BankType       string `json:"bank_type,omitempty"`
-	TotalFee       int64  `json:"total_fee,omitempty"`
+	TotalFee       string `json:"total_fee,omitempty"` //int64
 	FeeType        string `json:"fee_type,omitempty"`
 
-	CashFee            int64  `json:"cash_fee,omitempty"`
+	CashFee            string `json:"cash_fee,omitempty"` //int64
 	CashFeeType        string `json:"cash_fee_type,omitempty"`
-	SettlementTotalFee int64  `json:"settlement_total_fee,omitempty"`
-	CouponFee          int64  `json:"coupon_fee,omitempty"`
-	CouponCount        int64  `json:"coupon_count,omitempty"`
+	SettlementTotalFee string `json:"settlement_total_fee,omitempty"` //int64
+	CouponFee          string `json:"coupon_fee,omitempty"`           //int64
+	CouponCount        string `json:"coupon_count,omitempty"`         //int64
 
 	TransactionId string `json:"transaction_id,omitempty"`
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
