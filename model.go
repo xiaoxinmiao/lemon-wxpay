@@ -238,40 +238,40 @@ type RespPrePayDto struct {
 }
 
 type NotifyDto struct {
-	ReturnCode string `json:"return_code,omitempty"`
-	ReturnMsg  string `json:"return_msg,omitempty"`
-	AppId      string `json:"appid,omitempty"`
-	MchId      string `json:"mch_id,omitempty"`
-	SubAppId   string `json:"sub_appid,omitempty"`
+	ReturnCode string `xml:"return_code,omitempty" json:"return_code,omitempty"`
+	ReturnMsg  string `xml:"return_msg,omitempty" json:"return_msg,omitempty"`
+	AppId      string `xml:"appid,omitempty" json:"appid,omitempty"`
+	MchId      string `xml:"mch_id,omitempty" json:"mch_id,omitempty"`
+	SubAppId   string `xml:"sub_appid,omitempty" json:"sub_appid,omitempty"`
 
-	SubMchId   string `json:"sub_mch_id,omitempty"`
-	DeviceInfo string `json:"device_info,omitempty"`
-	NonceStr   string `json:"nonce_str,omitempty"`
-	Sign       string `json:"sign,omitempty"`
-	ResultCode string `json:"result_code,omitempty"`
+	SubMchId   string `xml:"sub_mch_id,omitempty" json:"sub_mch_id,omitempty"`
+	DeviceInfo string `xml:"device_info,omitempty" json:"device_info,omitempty"`
+	NonceStr   string `xml:"nonce_str,omitempty" json:"nonce_str,omitempty"`
+	Sign       string `xml:"sign,omitempty" json:"sign,omitempty"`
+	ResultCode string `xml:"result_code,omitempty" json:"result_code,omitempty"`
 
-	ErrCode     string `json:"err_code,omitempty"`
-	ErrCodeDes  string `json:"err_code_des,omitempty"`
-	OpenId      string `json:"openid,omitempty"`
-	IsSubscribe string `json:"is_subscribe,omitempty"`
-	SubOpenId   string `json:"sub_openid,omitempty"`
+	ErrCode     string `xml:"err_code,omitempty" json:"err_code,omitempty"`
+	ErrCodeDes  string `xml:"err_code_des,omitempty" json:"err_code_des,omitempty"`
+	OpenId      string `xml:"openid,omitempty" json:"openid,omitempty"`
+	IsSubscribe string `xml:"is_subscribe,omitempty" json:"is_subscribe,omitempty"`
+	SubOpenId   string `xml:"sub_openid,omitempty" json:"sub_openid,omitempty"`
 
-	SubIsSubscribe string `json:"sub_is_subscribe,omitempty"`
-	TradeType      string `json:"trade_type,omitempty"`
-	BankType       string `json:"bank_type,omitempty"`
-	TotalFee       string `json:"total_fee,omitempty"` //int64
-	FeeType        string `json:"fee_type,omitempty"`
+	SubIsSubscribe string `xml:"sub_is_subscribe,omitempty" json:"sub_is_subscribe,omitempty"`
+	TradeType      string `xml:"trade_type,omitempty" json:"trade_type,omitempty"`
+	BankType       string `xml:"bank_type,omitempty" json:"bank_type,omitempty"`
+	TotalFee       int64  `xml:"total_fee,omitempty" json:"total_fee,omitempty"` //int64
+	FeeType        string `xml:"fee_type,omitempty" json:"fee_type,omitempty"`
 
-	CashFee            string `json:"cash_fee,omitempty"` //int64
-	CashFeeType        string `json:"cash_fee_type,omitempty"`
-	SettlementTotalFee string `json:"settlement_total_fee,omitempty"` //int64
-	CouponFee          string `json:"coupon_fee,omitempty"`           //int64
-	CouponCount        string `json:"coupon_count,omitempty"`         //int64
+	CashFee            int64  `xml:"cash_fee,omitempty" json:"cash_fee,omitempty"` //int64
+	CashFeeType        string `xml:"cash_fee_type,omitempty" json:"cash_fee_type,omitempty"`
+	SettlementTotalFee int64  `xml:"settlement_total_fee,omitempty" json:"settlement_total_fee,omitempty"` //int64
+	CouponFee          int64  `xml:"coupon_fee,omitempty" json:"coupon_fee,omitempty"`                     //int64
+	CouponCount        int64  `xml:"coupon_count,omitempty" json:"coupon_count,omitempty"`                 //int64
 
-	TransactionId string `json:"transaction_id,omitempty"`
-	OutTradeNo    string `json:"out_trade_no,omitempty"`
-	Attach        string `json:"attach,omitempty"`
-	TimeEnd       string `json:"time_end,omitempty"`
+	TransactionId string `xml:"transaction_id,omitempty" json:"transaction_id,omitempty"`
+	OutTradeNo    string `xml:"out_trade_no,omitempty" json:"out_trade_no,omitempty"`
+	Attach        string `xml:"attach,omitempty" json:"attach,omitempty"`
+	TimeEnd       string `xml:"time_end,omitempty" json:"time_end,omitempty"`
 }
 
 type RespRefundQueryDto struct {
