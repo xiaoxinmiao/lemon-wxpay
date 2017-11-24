@@ -2,14 +2,12 @@ package wxpay
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/relax-space/go-kitt/mapstruct"
-
-	"github.com/relax-space/go-kit/data"
 	"github.com/relax-space/go-kitt/random"
 
 	"github.com/relax-space/go-kit/httpreq"
@@ -277,31 +275,27 @@ func PrePay(reqDto ReqPrePayDto, custDto ReqCustomerDto) (result map[string]inte
 
 //sub_notify_url maybe exist in attach,
 //if sub_notify_url exist,then redirect to sub_notify_url
-func Notify(xmlBody string) (result NotifyDto, mResult map[string]interface{}, err error) {
-	dataObj := data.New()
-	err = dataObj.FromXml(xmlBody)
+func Notify(xmlBody string) (result NotifyDto, err error) {
+	err = xml.Unmarshal([]byte(xmlBody), &result)
 	if err != nil {
 		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
-		return
-	}
-	mResult = dataObj.DataAttr
-	err = mapstruct.Decode(mResult, &result)
-	if err != nil {
 		return
 	}
 
 	if len(result.Attach) == 0 {
 		return
-	}
-	var attachObj struct {
-		SubNotifyUrl string `json:"sub_notify_url"`
-	}
-	err = json.Unmarshal([]byte(result.Attach), &attachObj)
-	if err != nil {
-		return
-	}
-	if len(attachObj.SubNotifyUrl) != 0 {
-		_, err = httpreq.POST("", attachObj.SubNotifyUrl, mResult, nil)
+	} else {
+		var attachObj struct {
+			SubNotifyUrl string `json:"sub_notify_url"`
+		}
+		err = json.Unmarshal([]byte(result.Attach), &attachObj)
+		if err != nil {
+			return
+		}
+
+		if len(attachObj.SubNotifyUrl) != 0 {
+			_, err = httpreq.POST("", attachObj.SubNotifyUrl, result, nil)
+		}
 	}
 	return
 }
