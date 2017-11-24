@@ -16,7 +16,7 @@ import (
 	"github.com/relax-space/go-kit/sign"
 )
 
-func LoopQuery(reqDto ReqQueryDto, custDto ReqCustomerDto, limit, interval int) (queryResult map[string]interface{}, err error) {
+func LoopQuery(reqDto *ReqQueryDto, custDto *ReqCustomerDto, limit, interval int) (queryResult map[string]interface{}, err error) {
 	count := limit / interval
 	waitTime := time.Duration(interval) * time.Second //2s
 	for index := 0; index < count; index++ {
@@ -49,7 +49,7 @@ func LoopQuery(reqDto ReqQueryDto, custDto ReqCustomerDto, limit, interval int) 
 	return
 }
 
-func Pay(reqDto ReqPayDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+func Pay(reqDto *ReqPayDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	outTradeNo := reqDto.OutTradeNo
@@ -89,7 +89,7 @@ func Pay(reqDto ReqPayDto, custDto ReqCustomerDto) (result map[string]interface{
 	}
 	return
 }
-func Query(reqDto ReqQueryDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+func Query(reqDto *ReqQueryDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
@@ -109,11 +109,11 @@ func Query(reqDto ReqQueryDto, custDto ReqCustomerDto) (result map[string]interf
 	return
 }
 
-func Refund(reqDto ReqRefundDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+func Refund(reqDto *ReqRefundDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 	//query
 	queryDto := ReqQueryDto{ReqBaseDto: reqDto.ReqBaseDto, OutTradeNo: reqDto.OutTradeNo}
-	queryResult, err := Query(queryDto, custDto)
+	queryResult, err := Query(&queryDto, custDto)
 	if err != nil {
 		err = errors.New("refund failure")
 		return
@@ -154,7 +154,7 @@ func Refund(reqDto ReqRefundDto, custDto ReqCustomerDto) (result map[string]inte
 	return
 }
 
-func Reverse(reqDto ReqReverseDto, custDto ReqCustomerDto, count int, interval int) (result map[string]interface{}, err error) {
+func Reverse(reqDto *ReqReverseDto, custDto *ReqCustomerDto, count int, interval int) (result map[string]interface{}, err error) {
 	if count <= 0 {
 		err = errors.New("The count of reverse must be greater than 0")
 		return
@@ -200,7 +200,7 @@ func Reverse(reqDto ReqReverseDto, custDto ReqCustomerDto, count int, interval i
 	return
 }
 
-func RefundQuery(reqDto ReqRefundQueryDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+func RefundQuery(reqDto *ReqRefundQueryDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
@@ -223,7 +223,7 @@ func RefundQuery(reqDto ReqRefundQueryDto, custDto ReqCustomerDto) (result map[s
 	return
 }
 
-func PrePay(reqDto ReqPrePayDto, custDto ReqCustomerDto) (result map[string]interface{}, err error) {
+func PrePay(reqDto *ReqPrePayDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 	if len(reqDto.OutTradeNo) == 0 {
 		SetValue(wxPayData, "out_trade_no", random.Uuid(PRE_PREOUTTRADENO))
