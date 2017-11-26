@@ -48,7 +48,7 @@ const (
 	URLREFUNDQUERY = "https://api.mch.weixin.qq.com/pay/refundquery"
 )
 
-func BuildCommonparam(baseDto ReqBaseDto) *data.Data {
+func BuildCommonparam(baseDto *ReqBaseDto) *data.Data {
 	data := data.New()
 	SetValue(data, "appid", baseDto.AppId)
 	SetValue(data, "sub_appid", baseDto.SubAppId)

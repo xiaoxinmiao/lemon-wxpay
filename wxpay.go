@@ -54,7 +54,7 @@ func Pay(reqDto *ReqPayDto, custDto *ReqCustomerDto) (result map[string]interfac
 
 	outTradeNo := reqDto.OutTradeNo
 	if len(outTradeNo) == 0 {
-		outTradeNo = random.Uuid(PRE_OUTTRADENO)
+		outTradeNo = random.Uuid(PRE_OUTTRADENO + time.Now().Format("20160102"))
 	}
 	SetValue(wxPayData, "out_trade_no", outTradeNo)
 	SetValue(wxPayData, "body", reqDto.Body)
@@ -126,7 +126,7 @@ func Refund(reqDto *ReqRefundDto, custDto *ReqCustomerDto) (result map[string]in
 
 	outRefundNo := reqDto.OutRefundNo
 	if len(outRefundNo) == 0 {
-		outRefundNo = random.Uuid(PRE_OUTREFUNDNO)
+		outRefundNo = random.Uuid(PRE_OUTREFUNDNO + time.Now().Format("20160102"))
 	}
 	SetValue(wxPayData, "out_refund_no", outRefundNo)
 	SetValue(wxPayData, "device_info", reqDto.DeviceInfo)
@@ -226,7 +226,7 @@ func RefundQuery(reqDto *ReqRefundQueryDto, custDto *ReqCustomerDto) (result map
 func PrePay(reqDto *ReqPrePayDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 	if len(reqDto.OutTradeNo) == 0 {
-		SetValue(wxPayData, "out_trade_no", random.Uuid(PRE_PREOUTTRADENO))
+		SetValue(wxPayData, "out_trade_no", random.Uuid(PRE_PREOUTTRADENO+time.Now().Format("20160102")))
 	} else {
 		SetValue(wxPayData, "out_trade_no", reqDto.OutTradeNo)
 	}

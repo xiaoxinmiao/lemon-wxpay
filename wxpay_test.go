@@ -17,7 +17,7 @@ var (
 
 func Test_Pay(t *testing.T) {
 	reqDto := ReqPayDto{
-		ReqBaseDto: ReqBaseDto{
+		ReqBaseDto: &ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
@@ -49,7 +49,7 @@ func Test_Pay(t *testing.T) {
 
 func Test_Query(t *testing.T) {
 	reqDto := ReqQueryDto{
-		ReqBaseDto: ReqBaseDto{
+		ReqBaseDto: &ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
@@ -65,7 +65,7 @@ func Test_Query(t *testing.T) {
 
 func Test_Refund(t *testing.T) {
 	reqDto := ReqRefundDto{
-		ReqBaseDto: ReqBaseDto{
+		ReqBaseDto: &ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
@@ -85,7 +85,7 @@ func Test_Refund(t *testing.T) {
 
 func Test_Reverse(t *testing.T) {
 	reqDto := ReqReverseDto{
-		ReqBaseDto: ReqBaseDto{
+		ReqBaseDto: &ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
@@ -104,7 +104,7 @@ func Test_Reverse(t *testing.T) {
 
 func Test_RefundQuery(t *testing.T) {
 	reqDto := ReqRefundQueryDto{
-		ReqBaseDto: ReqBaseDto{
+		ReqBaseDto: &ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
@@ -120,7 +120,7 @@ func Test_RefundQuery(t *testing.T) {
 
 func Test_PrePay(t *testing.T) {
 	reqDto := ReqPrePayDto{
-		ReqBaseDto: ReqBaseDto{
+		ReqBaseDto: &ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
 		},
