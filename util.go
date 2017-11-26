@@ -91,7 +91,7 @@ func RespParse(bodyByte []byte, key string) (result map[string]interface{}, err 
 	}
 	wxSign := data.DataAttr["sign"].(string)
 	delete(data.DataAttr, "sign")
-	if sign.CheckSign(base.JoinMapObject(data.DataAttr), key, wxSign) == false {
+	if sign.CheckMd5Sign(base.JoinMapObject(data.DataAttr), key, wxSign) == false {
 		err = errors.New("Signature verification failed")
 		return
 	}
