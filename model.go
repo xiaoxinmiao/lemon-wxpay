@@ -11,7 +11,7 @@ type ReqBaseDto struct {
 }
 
 type ReqPayDto struct {
-	ReqBaseDto
+	*ReqBaseDto
 	DeviceInfo string `json:"device_info,omitempty"`
 	Body       string `json:"body,omitempty"`
 	Detail     string `json:"detail,omitempty"`
@@ -29,7 +29,7 @@ type ReqPayDto struct {
 }
 
 type ReqPrePayDto struct {
-	ReqBaseDto
+	*ReqBaseDto
 	SignType   string `json:"sign_type,omitempty"`
 	Body       string `json:"body,omitempty"`
 	Detail     string `json:"detail,omitempty"`
@@ -62,13 +62,13 @@ type SceneInfoDto struct {
 }
 
 type ReqQueryDto struct {
-	ReqBaseDto
+	*ReqBaseDto
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty"`
 }
 
 type ReqRefundDto struct {
-	ReqBaseDto
+	*ReqBaseDto
 	OutRefundNo   string `json:"out_refund_no,omitempty"`
 	DeviceInfo    string `json:"device_info,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty"`
@@ -80,12 +80,12 @@ type ReqRefundDto struct {
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 }
 type ReqReverseDto struct {
-	ReqBaseDto
+	*ReqBaseDto
 	TransactionId string `json:"transaction_id,omitempty"`
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 }
 type ReqRefundQueryDto struct {
-	ReqBaseDto
+	*ReqBaseDto
 	TransactionId string `json:"transaction_id,omitempty"`
 	OutTradeNo    string `json:"out_trade_no,omitempty"`
 	OutRefundNo   string `json:"out_refund_no,omitempty"`
