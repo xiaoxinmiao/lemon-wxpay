@@ -28,7 +28,7 @@ type ReqPayDto struct {
 	SceneInfo  SceneInfoDto `json:"scene_info,omitempty"`
 }
 
-type ReqPrePayDto struct {
+type ReqPrepayDto struct {
 	*ReqBaseDto
 	SignType   string `json:"sign_type,omitempty" query:"sign_type"`
 	Body       string `json:"body,omitempty" query:"body"`
@@ -231,9 +231,9 @@ type RespReverseDto struct {
 	Recall string `json:"recall,omitempty"`
 }
 
-type RespPrePayDto struct {
+type RespPrepayDto struct {
 	TradeType string `json:"trade_type,omitempty"`
-	PrePayId  string `json:"prepay_id,omitempty"`
+	PrepayId  string `json:"prepay_id,omitempty"`
 	CodeUrl   string `json:"code_url,omitempty"`
 }
 
