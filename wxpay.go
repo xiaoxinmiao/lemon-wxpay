@@ -223,7 +223,7 @@ func RefundQuery(reqDto *ReqRefundQueryDto, custDto *ReqCustomerDto) (result map
 	return
 }
 
-func PrePay(reqDto *ReqPrePayDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
+func Prepay(reqDto *ReqPrepayDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 	if len(reqDto.OutTradeNo) == 0 {
 		SetValue(wxPayData, "out_trade_no", random.Uuid(PRE_PREOUTTRADENO+time.Now().Format("20160102")))

@@ -118,8 +118,8 @@ func Test_RefundQuery(t *testing.T) {
 	test.Ok(t, err)
 }
 
-func Test_PrePay(t *testing.T) {
-	reqDto := ReqPrePayDto{
+func Test_Prepay(t *testing.T) {
+	reqDto := ReqPrepayDto{
 		ReqBaseDto: &ReqBaseDto{
 			AppId: *appId,
 			MchId: *mchId,
@@ -133,7 +133,7 @@ func Test_PrePay(t *testing.T) {
 	custDto := ReqCustomerDto{
 		Key: *key,
 	}
-	result, err := PrePay(&reqDto, &custDto)
+	result, err := Prepay(&reqDto, &custDto)
 	fmt.Printf("%+v", result)
 	test.Ok(t, err)
 }
