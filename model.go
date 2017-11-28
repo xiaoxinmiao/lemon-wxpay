@@ -30,28 +30,28 @@ type ReqPayDto struct {
 
 type ReqPrePayDto struct {
 	*ReqBaseDto
-	SignType   string `json:"sign_type,omitempty"`
-	Body       string `json:"body,omitempty"`
-	Detail     string `json:"detail,omitempty"`
-	Attach     string `json:"attach,omitempty"`
-	DeviceInfo string `json:"device_info,omitempty"`
+	SignType   string `json:"sign_type,omitempty" query:"sign_type"`
+	Body       string `json:"body,omitempty" query:"body"`
+	Detail     string `json:"detail,omitempty" query:"detail"`
+	Attach     string `json:"attach,omitempty" query:"attach"`
+	DeviceInfo string `json:"device_info,omitempty" query:"device_info"`
 
-	FeeType        string `json:"fee_type,omitempty"`
-	TotalFee       int64  `json:"total_fee,omitempty"`
-	SpbillCreateIp string `json:"spbill_create_ip,omitempty"`
-	TimeStart      string `json:"time_start,omitempty"`
-	TimeExpire     string `json:"time_expire,omitempty"`
+	FeeType        string `json:"fee_type,omitempty" query:"fee_type"`
+	TotalFee       int64  `json:"total_fee,omitempty" query:"total_fee"`
+	SpbillCreateIp string `json:"spbill_create_ip,omitempty" query:"spbill_create_ip"`
+	TimeStart      string `json:"time_start,omitempty" query:"time_start"`
+	TimeExpire     string `json:"time_expire,omitempty" query:"time_expire"`
 
-	GoodsTag  string `json:"goods_tag,omitempty"`
-	NotifyUrl string `json:"notify_url,omitempty"`
-	TradeType string `json:"trade_type,omitempty"`
-	ProductId string `json:"product_id,omitempty"`
-	LimitPay  string `json:"limit_pay,omitempty"`
+	GoodsTag  string `json:"goods_tag,omitempty" query:"goods_tag"`
+	NotifyUrl string `json:"notify_url,omitempty" query:"notify_url"`
+	TradeType string `json:"trade_type,omitempty" query:"trade_type"`
+	ProductId string `json:"product_id,omitempty" query:"product_id"`
+	LimitPay  string `json:"limit_pay,omitempty" query:"limit_pay"`
 
-	OpenId     string       `json:"openid,omitempty"`
-	SubOpenId  string       `json:"sub_openid,omitempty"`
-	OutTradeNo string       `json:"out_trade_no,omitempty"`
-	SceneInfo  SceneInfoDto `json:"scene_info,omitempty"`
+	OpenId     string       `json:"openid,omitempty" query:"openid"`
+	SubOpenId  string       `json:"sub_openid,omitempty" query:"sub_openid"`
+	OutTradeNo string       `json:"out_trade_no,omitempty" query:"out_trade_no"`
+	SceneInfo  SceneInfoDto `json:"scene_info,omitempty" query:"scene_info"`
 }
 
 type SceneInfoDto struct {
