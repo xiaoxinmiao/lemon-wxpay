@@ -246,8 +246,8 @@ func Prepay(reqDto *ReqPrepayDto, custDto *ReqCustomerDto) (result map[string]in
 
 	SetValue(wxPayData, "total_fee", reqDto.TotalFee)
 
-	SetValue(wxPayData, "time_start", base.GetDateFormat(base.GetChinaTime(time.Now()), 121))
-	SetValue(wxPayData, "time_expire", base.GetDateFormat(base.GetChinaTime(time.Now().Add(time.Minute*10)), 121))
+	SetValue(wxPayData, "time_start", reqDto.TimeStart)
+	SetValue(wxPayData, "time_expire", reqDto.TimeExpire)
 	SetValue(wxPayData, "goods_tag", reqDto.GoodsTag)
 
 	if len(reqDto.NotifyUrl) != 0 {
