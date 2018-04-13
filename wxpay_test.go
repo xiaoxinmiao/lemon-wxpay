@@ -28,21 +28,21 @@ func Test_Pay(t *testing.T) {
 	customDto := ReqCustomerDto{
 		Key: *key,
 	}
-	result, err := Pay(&reqDto, &customDto)
+	statusCode, code, result, err := Pay(&reqDto, &customDto)
+	fmt.Printf("statusCode:%+v,code:%+v,result:%+v", statusCode, code, result)
 	if err != nil {
 		if err.Error() == "MESSAGE_PAYING" {
 			dto := ReqQueryDto{
 				ReqBaseDto: reqDto.ReqBaseDto,
 				OutTradeNo: result["out_trade_no"].(string),
 			}
-			queryResult, err := LoopQuery(&dto, &customDto, 40, 2)
-			fmt.Printf("%+v", queryResult)
+			statusCode, code, queryResult, err := LoopQuery(&dto, &customDto, 40, 2)
+			fmt.Printf("statusCode:%+v,code:%+v,queryResult:%+v", statusCode, code, queryResult)
 			test.Ok(t, err)
 			return
 		}
 		test.Ok(t, err)
 	}
-	fmt.Printf("%+v", result)
 	test.Ok(t, err)
 
 }
@@ -58,8 +58,8 @@ func Test_Query(t *testing.T) {
 	custDto := ReqCustomerDto{
 		Key: *key,
 	}
-	result, err := Query(&reqDto, &custDto)
-	fmt.Printf("%+v", result)
+	statusCode, code, result, err := Query(&reqDto, &custDto)
+	fmt.Printf("statusCode:%+v,code:%+v,result:%+v", statusCode, code, result)
 	test.Ok(t, err)
 }
 
@@ -78,8 +78,8 @@ func Test_Refund(t *testing.T) {
 		CertPathKey:  fmt.Sprintf("c:/cert/%v/apiclient_key.pem", *mchId),
 		RootCa:       fmt.Sprintf("c:/cert/%v/rootca.pem", *mchId),
 	}
-	result, err := Refund(&reqDto, &custDto)
-	fmt.Printf("%+v", result)
+	statusCode, code, result, err := Refund(&reqDto, &custDto)
+	fmt.Printf("statusCode:%+v,code:%+v,result:%+v", statusCode, code, result)
 	test.Ok(t, err)
 }
 
@@ -97,8 +97,8 @@ func Test_Reverse(t *testing.T) {
 		CertPathKey:  fmt.Sprintf("c:/cert/%v/apiclient_key.pem", *mchId),
 		RootCa:       fmt.Sprintf("c:/cert/%v/rootca.pem", *mchId),
 	}
-	result, err := Reverse(&reqDto, &custDto, 10, 10)
-	fmt.Printf("%+v", result)
+	statusCode, code, result, err := Reverse(&reqDto, &custDto, 10, 10)
+	fmt.Printf("statusCode:%+v,code:%+v,result:%+v", statusCode, code, result)
 	test.Ok(t, err)
 }
 
@@ -113,8 +113,8 @@ func Test_RefundQuery(t *testing.T) {
 	custDto := ReqCustomerDto{
 		Key: *key,
 	}
-	result, err := RefundQuery(&reqDto, &custDto)
-	fmt.Printf("%+v", result)
+	statusCode, code, result, err := RefundQuery(&reqDto, &custDto)
+	fmt.Printf("statusCode:%+v,code:%+v,result:%+v", statusCode, code, result)
 	test.Ok(t, err)
 }
 
@@ -133,8 +133,8 @@ func Test_Prepay(t *testing.T) {
 	custDto := ReqCustomerDto{
 		Key: *key,
 	}
-	result, err := Prepay(&reqDto, &custDto)
-	fmt.Printf("%+v", result)
+	statusCode, code, result, err := Prepay(&reqDto, &custDto)
+	fmt.Printf("statusCode:%+v,code:%+v,result:%+v", statusCode, code, result)
 	test.Ok(t, err)
 }
 

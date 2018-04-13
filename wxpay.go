@@ -16,11 +16,11 @@ import (
 	"github.com/relax-space/go-kit/sign"
 )
 
-func LoopQuery(reqDto *ReqQueryDto, custDto *ReqCustomerDto, limit, interval int) (queryResult map[string]interface{}, err error) {
+func LoopQuery(reqDto *ReqQueryDto, custDto *ReqCustomerDto, limit, interval int) (statusCode int, code string, queryResult map[string]interface{}, err error) {
 	count := limit / interval
 	waitTime := time.Duration(interval) * time.Second //2s
 	for index := 0; index < count; index++ {
-		queryResult, err = Query(reqDto, custDto)
+		statusCode, code, queryResult, err = Query(reqDto, custDto)
 		if err == nil { // 1. request wechat query api success
 			tradeStatusObj, ok := queryResult["trade_state"]
 			if !ok { //1.1 wechat query api response result is exception
@@ -30,9 +30,11 @@ func LoopQuery(reqDto *ReqQueryDto, custDto *ReqCustomerDto, limit, interval int
 			tradeStatus := tradeStatusObj.(string)
 			switch {
 			case tradeStatus == "SUCCESS": //1.2 pay success
+				code = SUC
 				return
 			case tradeStatus == "CLOSED" || tradeStatus == "REFUND" || tradeStatus == "REVOKED" || tradeStatus == "NOTPAY" || tradeStatus == "PAYERROR":
-				err = errors.New("wechat pay failure")
+				err = fmt.Errorf("pay status is %v", tradeStatus)
+				code = E03
 				return //1.3 pay failure
 			case tradeStatus == "USERPAYING": //1.4 pay unknown
 				if index < count {
@@ -46,10 +48,11 @@ func LoopQuery(reqDto *ReqQueryDto, custDto *ReqCustomerDto, limit, interval int
 		}
 	}
 	err = errors.New(MESSAGE_OVERTIME)
+	code = E03
 	return
 }
 
-func Pay(reqDto *ReqPayDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
+func Pay(reqDto *ReqPayDto, custDto *ReqCustomerDto) (statusCode int, code string, result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	outTradeNo := reqDto.OutTradeNo
@@ -74,13 +77,14 @@ func Pay(reqDto *ReqPayDto, custDto *ReqCustomerDto) (result map[string]interfac
 	}
 	signStr := base.JoinMapObject(wxPayData.DataAttr)
 	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
-	_, body, err := httpreq.NewPost(URLPAY, []byte(wxPayData.ToXml()),
+	resp, body, err := httpreq.NewPost(URLPAY, []byte(wxPayData.ToXml()),
 		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
 	if err != nil {
-		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
+		code = E01
 		return
 	}
-	result, err = RespParse(body, custDto.Key)
+	statusCode = resp.StatusCode
+	code, result, err = RespParse(body, custDto.Key)
 	if err != nil {
 		if err.Error() == MESSAGE_PAYING {
 			result = map[string]interface{}{"out_trade_no": outTradeNo}
@@ -89,7 +93,7 @@ func Pay(reqDto *ReqPayDto, custDto *ReqCustomerDto) (result map[string]interfac
 	}
 	return
 }
-func Query(reqDto *ReqQueryDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
+func Query(reqDto *ReqQueryDto, custDto *ReqCustomerDto) (statusCode int, code string, result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
@@ -97,30 +101,31 @@ func Query(reqDto *ReqQueryDto, custDto *ReqCustomerDto) (result map[string]inte
 
 	signStr := base.JoinMapObject(wxPayData.DataAttr)
 	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
-	_, body, err := httpreq.NewPost(URLQUERY, []byte(wxPayData.ToXml()),
+	resp, body, err := httpreq.NewPost(URLQUERY, []byte(wxPayData.ToXml()),
 		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
 	if err != nil {
+		code = E01
 		return
 	}
-	result, err = RespParse(body, custDto.Key)
-	if err != nil {
-		return
-	}
+	statusCode = resp.StatusCode
+	code, result, err = RespParse(body, custDto.Key)
 	return
 }
 
-func Refund(reqDto *ReqRefundDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
+func Refund(reqDto *ReqRefundDto, custDto *ReqCustomerDto) (statusCode int, code string, result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 	//query
 	queryDto := ReqQueryDto{ReqBaseDto: reqDto.ReqBaseDto, OutTradeNo: reqDto.OutTradeNo}
-	queryResult, err := Query(&queryDto, custDto)
+	statusCode, code, queryResult, err := Query(&queryDto, custDto)
 	if err != nil {
-		err = errors.New("refund failure")
+		err = errors.New("refund failure,please re-try")
+		code = E01
 		return
 	}
 	totalFee, ok := queryResult["total_fee"]
 	if !ok {
-		err = errors.New("refund failure")
+		err = errors.New("refund failure,please re-try")
+		code = E01
 		return
 	}
 
@@ -143,20 +148,24 @@ func Refund(reqDto *ReqRefundDto, custDto *ReqCustomerDto) (result map[string]in
 	tr, err := httpreq.CertTransport(custDto.CertPathName, custDto.CertPathKey, custDto.RootCa)
 	if err != nil {
 		err = errors.New("Certificate verification failed")
+		code = E02
 		return
 	}
-	_, body, err := httpreq.NewPost(URLREFUND, []byte(wxPayData.ToXml()), &httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, tr)
+	resp, body, err := httpreq.NewPost(URLREFUND, []byte(wxPayData.ToXml()),
+		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, tr)
 	if err != nil {
-		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
+		code = E01
 		return
 	}
-	result, err = RespParse(body, custDto.Key)
+	statusCode = resp.StatusCode
+	code, result, err = RespParse(body, custDto.Key)
 	return
 }
 
-func Reverse(reqDto *ReqReverseDto, custDto *ReqCustomerDto, count int, interval int) (result map[string]interface{}, err error) {
+func Reverse(reqDto *ReqReverseDto, custDto *ReqCustomerDto, count int, interval int) (statusCode int, code string, result map[string]interface{}, err error) {
 	if count <= 0 {
-		err = errors.New("The count of reverse must be greater than 0")
+		err = errors.New("reverse failure")
+		code = E01
 		return
 	}
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
@@ -169,20 +178,24 @@ func Reverse(reqDto *ReqReverseDto, custDto *ReqCustomerDto, count int, interval
 	tr, err := httpreq.CertTransport(custDto.CertPathName, custDto.CertPathKey, custDto.RootCa)
 	if err != nil {
 		err = errors.New("Certificate verification failed")
+		code = E02
 		return
 	}
-	_, body, err := httpreq.NewPost(URLREVERSE, []byte(wxPayData.ToXml()), &httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, tr)
+	resp, body, err := httpreq.NewPost(URLREVERSE, []byte(wxPayData.ToXml()),
+		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, tr)
 	if err != nil {
-		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
+		code = E01
 		return
 	}
-	result, err = RespParse(body, custDto.Key)
+	statusCode = resp.StatusCode
+	code, result, err = RespParse(body, custDto.Key)
 	if err != nil {
 		return
 	}
 	recallObj, ok := result["recall"]
 	if !ok {
-		err = errors.New("reverse failure")
+		err = errors.New("reverse failure,please re-try")
+		code = E01
 		return
 	}
 
@@ -191,16 +204,15 @@ func Reverse(reqDto *ReqReverseDto, custDto *ReqCustomerDto, count int, interval
 		time.Sleep(time.Duration(interval) * time.Second) //10s
 		count = count - 1
 		return Reverse(reqDto, custDto, count, interval)
-	} else if recall == "N" {
+	} else if recall != "N" {
+		err = errors.New("reverse failure,please re-try")
+		code = E01
 		return
-	} else {
-		err = errors.New("reverse failure")
 	}
-
 	return
 }
 
-func RefundQuery(reqDto *ReqRefundQueryDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
+func RefundQuery(reqDto *ReqRefundQueryDto, custDto *ReqCustomerDto) (statusCode int, code string, result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 
 	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
@@ -211,19 +223,18 @@ func RefundQuery(reqDto *ReqRefundQueryDto, custDto *ReqCustomerDto) (result map
 
 	signStr := base.JoinMapObject(wxPayData.DataAttr)
 	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
-	_, body, err := httpreq.NewPost(URLREFUNDQUERY, []byte(wxPayData.ToXml()),
+	resp, body, err := httpreq.NewPost(URLREFUNDQUERY, []byte(wxPayData.ToXml()),
 		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
 	if err != nil {
+		code = E01
 		return
 	}
-	result, err = RespParse(body, custDto.Key)
-	if err != nil {
-		return
-	}
+	statusCode = resp.StatusCode
+	code, result, err = RespParse(body, custDto.Key)
 	return
 }
 
-func Prepay(reqDto *ReqPrepayDto, custDto *ReqCustomerDto) (result map[string]interface{}, err error) {
+func Prepay(reqDto *ReqPrepayDto, custDto *ReqCustomerDto) (statusCode int, code string, result map[string]interface{}, err error) {
 	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
 	if len(reqDto.OutTradeNo) == 0 {
 		SetValue(wxPayData, "out_trade_no", random.Uuid(PRE_PREOUTTRADENO+time.Now().Format("20160102")))
@@ -264,12 +275,13 @@ func Prepay(reqDto *ReqPrepayDto, custDto *ReqCustomerDto) (result map[string]in
 	SetValue(wxPayData, "scene_info", reqDto.SceneInfo)
 	signStr := base.JoinMapObject(wxPayData.DataAttr)
 	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
-	_, body, err := httpreq.NewPost(URLPREPAY, []byte(wxPayData.ToXml()), &httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
+	resp, body, err := httpreq.NewPost(URLPREPAY, []byte(wxPayData.ToXml()), &httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
 	if err != nil {
-		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, err)
+		code = E01
 		return
 	}
-	result, err = RespParse(body, custDto.Key)
+	statusCode = resp.StatusCode
+	code, result, err = RespParse(body, custDto.Key)
 	return
 }
 
