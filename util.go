@@ -48,6 +48,14 @@ const (
 	URLREFUNDQUERY = "https://api.mch.weixin.qq.com/pay/refundquery"
 )
 
+const (
+	SUC = "SUC" //success
+	E01 = "E01" //system error,can re-try
+	E02 = "E02" //bad request format
+	E03 = "E03" //message from wechat
+	E04 = "E04" //bad response
+)
+
 func BuildCommonparam(baseDto *ReqBaseDto) *data.Data {
 	data := data.New()
 	SetValue(data, "appid", baseDto.AppId)
@@ -64,37 +72,54 @@ func SetValue(data *data.Data, key string, value interface{}) {
 	}
 }
 
-func RespParse(bodyByte []byte, key string) (result map[string]interface{}, err error) {
+func RespParse(bodyByte []byte, key string) (code string, result map[string]interface{}, err error) {
 	data := data.New()
 	err = data.FromXml(string(bodyByte))
 	if err != nil {
+		code = E04
+		return
+	}
+	if !data.IsSet("return_code") {
+		err = errors.New("wechat response:return_code is missing")
+		code = E04
 		return
 	}
 
-	if !data.IsSet("return_code") || strings.ToUpper(data.GetValue("return_code").(string)) != "SUCCESS" {
+	if strings.ToUpper(data.GetValue("return_code").(string)) != "SUCCESS" {
 		err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, data.GetValue("return_msg"))
+		code = E03
 		return
 	}
-	if !(data.IsSet("result_code")) || strings.ToUpper(data.GetValue("result_code").(string)) != "SUCCESS" {
+	if !data.IsSet("result_code") {
+		err = errors.New("wechat response:result_code is missing")
+		code = E04
+		return
+	}
+	if strings.ToUpper(data.GetValue("result_code").(string)) != "SUCCESS" {
 		errCode := data.GetValue("err_code")
 		if errCode == SYSTEMERROR || errCode == BANKERROR || errCode == USERPAYING {
 			err = errors.New(MESSAGE_PAYING)
+			code = E03
 			return
 		} else {
 			err = fmt.Errorf("%v:%v-%v", MESSAGE_WECHAT, errCode, data.GetValue("err_code_des"))
+			code = E03
 			return
 		}
 	}
 	if !data.IsSet("sign") {
 		err = errors.New("Signature verification failed")
+		code = E04
 		return
 	}
 	wxSign := data.DataAttr["sign"].(string)
 	delete(data.DataAttr, "sign")
 	if sign.CheckMd5Sign(base.JoinMapObject(data.DataAttr), key, wxSign) == false {
 		err = errors.New("Signature verification failed")
+		code = E04
 		return
 	}
+	code = SUC
 	result = data.DataAttr
 	return
 
