@@ -134,7 +134,6 @@ func Refund(reqDto *ReqRefundDto, custDto *ReqCustomerDto) (statusCode int, code
 		outRefundNo = random.Uuid(PRE_OUTREFUNDNO + time.Now().Format("20160102"))
 	}
 	SetValue(wxPayData, "out_refund_no", outRefundNo)
-	SetValue(wxPayData, "device_info", reqDto.DeviceInfo)
 	SetValue(wxPayData, "transaction_id", reqDto.TransactionId)
 	SetValue(wxPayData, "total_fee", totalFee)
 	SetValue(wxPayData, "refund_fee", reqDto.RefundFee)

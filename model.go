@@ -16,49 +16,44 @@ type ReqPayDto struct {
 	Body       string `json:"body,omitempty" query:"body,omitempty"`
 	Detail     string `json:"detail,omitempty" query:"detail,omitempty"`
 	Attach     string `json:"attach,omitempty" query:"attach,omitempty"`
-	TotalFee   int64  `json:"total_fee,omitempty" query:"total_fee,omitempty"` //int64
+	OutTradeNo string `json:"out_trade_no,omitempty" query:"out_trade_no,omitempty"`
 
+	TotalFee       int64  `json:"total_fee,omitempty" query:"total_fee,omitempty"` //int64
 	FeeType        string `json:"fee_type,omitempty" query:"fee_type,omitempty"`
 	SpbillCreateIp string `json:"spbill_create_ip,omitempty" query:"spbill_create_ip,omitempty"`
 	GoodsTag       string `json:"goods_tag,omitempty" query:"goods_tag,omitempty"`
 	LimitPay       string `json:"limit_pay,omitempty" query:"limit_pay,omitempty"`
-	AuthCode       string `json:"auth_code,omitempty" query:"auth_code,omitempty"` //10,11,12,13,14,15
 
-	OutTradeNo string       `json:"out_trade_no,omitempty" query:"out_trade_no,omitempty"`
+	TimeStart  string       `json:"time_start,omitempty" query:"time_start,omitempty"`
+	TimeExpire string       `json:"time_expire,omitempty" query:"time_expire,omitempty"`
+	AuthCode   string       `json:"auth_code,omitempty" query:"auth_code,omitempty"` //10,11,12,13,14,15
 	SceneInfo  SceneInfoDto `json:"scene_info,omitempty" query:"scene_info,omitempty"`
 }
 
 type ReqPrepayDto struct {
 	*ReqBaseDto
+	DeviceInfo string `json:"device_info,omitempty" query:"device_info"`
 	SignType   string `json:"sign_type,omitempty" query:"sign_type"`
 	Body       string `json:"body,omitempty" query:"body"`
 	Detail     string `json:"detail,omitempty" query:"detail"`
 	Attach     string `json:"attach,omitempty" query:"attach"`
-	DeviceInfo string `json:"device_info,omitempty" query:"device_info"`
 
+	OutTradeNo     string `json:"out_trade_no,omitempty" query:"out_trade_no"`
 	FeeType        string `json:"fee_type,omitempty" query:"fee_type"`
 	TotalFee       int64  `json:"total_fee,omitempty" query:"total_fee"`
 	SpbillCreateIp string `json:"spbill_create_ip,omitempty" query:"spbill_create_ip"`
 	TimeStart      string `json:"time_start,omitempty" query:"time_start"`
-	TimeExpire     string `json:"time_expire,omitempty" query:"time_expire"`
 
-	GoodsTag  string `json:"goods_tag,omitempty" query:"goods_tag"`
-	NotifyUrl string `json:"notify_url,omitempty" query:"notify_url"`
-	TradeType string `json:"trade_type,omitempty" query:"trade_type"`
-	ProductId string `json:"product_id,omitempty" query:"product_id"`
-	LimitPay  string `json:"limit_pay,omitempty" query:"limit_pay"`
+	TimeExpire string `json:"time_expire,omitempty" query:"time_expire"`
+	GoodsTag   string `json:"goods_tag,omitempty" query:"goods_tag"`
+	NotifyUrl  string `json:"notify_url,omitempty" query:"notify_url"`
+	TradeType  string `json:"trade_type,omitempty" query:"trade_type"`
+	ProductId  string `json:"product_id,omitempty" query:"product_id"`
 
-	OpenId     string       `json:"openid,omitempty" query:"openid"`
-	SubOpenId  string       `json:"sub_openid,omitempty" query:"sub_openid"`
-	OutTradeNo string       `json:"out_trade_no,omitempty" query:"out_trade_no"`
-	SceneInfo  SceneInfoDto `json:"scene_info,omitempty" query:"scene_info"`
-}
-
-type SceneInfoDto struct {
-	Id       string `json:"id,omitempty" query:"id,omitempty"`
-	Name     string `json:"name,omitempty" query:"name,omitempty"`
-	AreaCode string `json:"area_code,omitempty" query:"area_code,omitempty"`
-	Address  string `json:"address,omitempty" query:"address,omitempty"`
+	LimitPay  string       `json:"limit_pay,omitempty" query:"limit_pay"`
+	OpenId    string       `json:"openid,omitempty" query:"openid"`
+	SubOpenId string       `json:"sub_openid,omitempty" query:"sub_openid"`
+	SceneInfo SceneInfoDto `json:"scene_info,omitempty" query:"scene_info"`
 }
 
 type ReqQueryDto struct {
@@ -69,15 +64,15 @@ type ReqQueryDto struct {
 
 type ReqRefundDto struct {
 	*ReqBaseDto
-	OutRefundNo   string `json:"out_refund_no,omitempty" query:"out_refund_no,omitempty"`
-	DeviceInfo    string `json:"device_info,omitempty" query:"device_info,omitempty"`
 	TransactionId string `json:"transaction_id,omitempty" query:"transaction_id,omitempty"`
+	OutTradeNo    string `json:"out_trade_no,omitempty" query:"out_trade_no,omitempty"`
+	OutRefundNo   string `json:"out_refund_no,omitempty" query:"out_refund_no,omitempty"`
 	TotalFee      int64  `json:"total_fee,omitempty" query:"total_fee,omitempty"`   //int64
 	RefundFee     int64  `json:"refund_fee,omitempty" query:"refund_fee,omitempty"` //int64
 
 	RefundFeeType string `json:"refund_fee_type,omitempty" query:"refund_fee_type,omitempty"`
+	RefundDesc    string `json:"refund_desc,omitempty" query:"refund_desc,omitempty"`
 	RefundAccount string `json:"refund_account,omitempty" query:"refund_account,omitempty"`
-	OutTradeNo    string `json:"out_trade_no,omitempty" query:"out_trade_no,omitempty"`
 }
 type ReqReverseDto struct {
 	*ReqBaseDto
@@ -120,25 +115,26 @@ type RespDto struct {
 }
 
 type RespPayDto struct {
-	DeviceInfo  string `json:"device_info,omitempty" query:"device_info,omitempty"`
-	OpenId      string `json:"openid,omitempty" query:"openid,omitempty"`
-	IsSubscribe string `json:"is_subscribe,omitempty" query:"is_subscribe,omitempty"`
+	DeviceInfo     string `json:"device_info,omitempty" query:"device_info,omitempty"`
+	OpenId         string `json:"openid,omitempty" query:"openid,omitempty"`
+	IsSubscribe    string `json:"is_subscribe,omitempty" query:"is_subscribe,omitempty"`
+	SubOpenid      string `json:"sub_openid,omitempty" query:"sub_openid,omitempty"`
+	SubIsSubscribe string `json:"sub_is_subscribe,omitempty" query:"sub_is_subscribe,omitempty"`
+
 	TradeType   string `json:"trade_type,omitempty" query:"trade_type,omitempty"`
 	BankType    string `json:"bank_type,omitempty" query:"bank_type,omitempty"`
+	FeeType     string `json:"fee_type,omitempty" query:"fee_type,omitempty"`
+	TotalFee    int64  `json:"total_fee,omitempty" query:"total_fee,omitempty"` //int64
+	CashFeeType string `json:"cash_fee_type,omitempty" query:"cash_fee_type,omitempty"`
 
-	FeeType             string `json:"fee_type,omitempty" query:"fee_type,omitempty"`
-	TotalFee            int64  `json:"total_fee,omitempty" query:"total_fee,omitempty"`                       //int64
-	SettlementTotal_Fee int64  `json:"settlement_total_fee,omitempty" query:"settlement_total_fee,omitempty"` //int64
-	CouponFee           int64  `json:"coupon_fee,omitempty" query:"coupon_fee,omitempty"`                     //int64
-	CashFeeType         string `json:"cash_fee_type,omitempty" query:"cash_fee_type,omitempty"`
+	CashFee            int64  `json:"cash_fee,omitempty" query:"cash_fee,omitempty"`                         //int64
+	SettlementTotalFee int64  `json:"settlement_total_fee,omitempty" query:"settlement_total_fee,omitempty"` //int64
+	CouponFee          int64  `json:"coupon_fee,omitempty" query:"coupon_fee,omitempty"`                     //int64
+	TransactionId      string `json:"transaction_id,omitempty" query:"transaction_id,omitempty"`
+	OutTradeNo         string `json:"out_trade_no,omitempty" query:"out_trade_no,omitempty"`
 
-	CashFee         int64  `json:"cash_fee,omitempty" query:"cash_fee,omitempty"` //int64
-	TransactionId   string `json:"transaction_id,omitempty" query:"transaction_id,omitempty"`
-	Attach          string `json:"attach,omitempty" query:"attach,omitempty"`
-	TimeEnd         string `json:"time_end,omitempty" query:"time_end,omitempty"` //yyyyMMddHHmmss
-	PromotionDetail string `json:"promotion_detail,omitempty" query:"promotion_detail,omitempty"`
-
-	OutTradeNo string `json:"out_trade_no,omitempty" query:"out_trade_no,omitempty"`
+	Attach  string `json:"attach,omitempty" query:"attach,omitempty"`
+	TimeEnd string `json:"time_end,omitempty" query:"time_end,omitempty"` //yyyyMMddHHmmss
 }
 
 type RespQueryDto struct {
@@ -183,10 +179,10 @@ type RespQueryDto struct {
 	CouponFee4  int64  `json:"coupon_fee_4,omitempty" query:"coupon_fee_4,omitempty"` //int64
 
 	TransactionId  string `json:"transaction_id,omitempty" query:"transaction_id,omitempty"`
+	OutTradeNo     string `json:"out_trade_no,omitempty" query:"out_trade_no,omitempty"`
 	Attach         string `json:"attach,omitempty" query:"attach,omitempty"`
 	TimeEnd        string `json:"time_end,omitempty" query:"time_end,omitempty"`
 	TradeStateDesc string `json:"trade_state_desc,omitempty" query:"trade_state_desc,omitempty"`
-	OutTradeNo     string `json:"out_trade_no,omitempty" query:"out_trade_no,omitempty"`
 }
 
 type RespRefundDto struct {
@@ -237,6 +233,88 @@ type RespPrepayDto struct {
 	CodeUrl   string `json:"code_url,omitempty" query:"code_url,omitempty"`
 }
 
+type RespRefundQueryDto struct {
+	TransactionId      string `json:"transaction_id;omitempty" query:"transaction_id;omitempty"`
+	OutTradeNo         string `json:"out_trade_no;omitempty" query:"out_trade_no;omitempty"`
+	TotalFee           int64  `json:"total_fee;omitempty" query:"total_fee;omitempty"`
+	SettlementTotalFee int64  `json:"settlement_total_fee;omitempty" query:"settlement_total_fee;omitempty"`
+	FeeType            string `json:"fee_type;omitempty" query:"fee_type;omitempty"`
+
+	CashFee          int64 `json:"cash_fee;omitempty" query:"cash_fee;omitempty"`
+	RefundCount      int64 `json:"refund_count;omitempty" query:"refund_count;omitempty"`
+	TotalRefundCount int64 `json:"total_refund_count;omitempty" query:"total_refund_count;omitempty"`
+
+	OutRefundNo1 string `json:"out_refund_no_1;omitempty" query:"out_refund_no_1;omitempty"`
+	OutRefundNo2 string `json:"out_refund_no_2;omitempty" query:"out_refund_no_2;omitempty"`
+	OutRefundNo3 string `json:"out_refund_no_3;omitempty" query:"out_refund_no_3;omitempty"`
+	OutRefundNo4 string `json:"out_refund_no_4;omitempty" query:"out_refund_no_4;omitempty"`
+
+	RefundId1 string `json:"refund_id_1;omitempty" query:"refund_id_1;omitempty"`
+	RefundId2 string `json:"refund_id_2;omitempty" query:"refund_id_2;omitempty"`
+	RefundId3 string `json:"refund_id_3;omitempty" query:"refund_id_3;omitempty"`
+	RefundId4 string `json:"refund_id_4;omitempty" query:"refund_id_4;omitempty"`
+
+	RefundChannel1 string `json:"refund_channel_1;omitempty" query:"refund_channel_1;omitempty"`
+	RefundChannel2 string `json:"refund_channel_2;omitempty" query:"refund_channel_2;omitempty"`
+	RefundChannel3 string `json:"refund_channel_3;omitempty" query:"refund_channel_3;omitempty"`
+	RefundChannel4 string `json:"refund_channel_4;omitempty" query:"refund_channel_4;omitempty"`
+
+	RefundFee1 int64 `json:"refund_fee_1;omitempty" query:"refund_fee_1;omitempty"`
+	RefundFee2 int64 `json:"refund_fee_2;omitempty" query:"refund_fee_2;omitempty"`
+	RefundFee3 int64 `json:"refund_fee_3;omitempty" query:"refund_fee_3;omitempty"`
+	RefundFee4 int64 `json:"refund_fee_4;omitempty" query:"refund_fee_4;omitempty"`
+
+	SettlementRefundFee1 int64 `json:"settlement_refund_fee_1;omitempty" query:"settlement_refund_fee_1;omitempty"`
+	SettlementRefundFee2 int64 `json:"settlement_refund_fee_2;omitempty" query:"settlement_refund_fee_2;omitempty"`
+	SettlementRefundFee3 int64 `json:"settlement_refund_fee_3;omitempty" query:"settlement_refund_fee_3;omitempty"`
+	SettlementRefundFee4 int64 `json:"settlement_refund_fee_4;omitempty" query:"settlement_refund_fee_4;omitempty"`
+
+	CouponType01 string `json:"coupon_type_0_1;omitempty" query:"coupon_type_0_1;omitempty"`
+	CouponType02 string `json:"coupon_type_0_2;omitempty" query:"coupon_type_0_2;omitempty"`
+	CouponType03 string `json:"coupon_type_0_3;omitempty" query:"coupon_type_0_3;omitempty"`
+	CouponType04 string `json:"coupon_type_0_4;omitempty" query:"coupon_type_0_4;omitempty"`
+
+	CouponRefundFee1 int64 `json:"coupon_refund_fee_1;omitempty" query:"coupon_refund_fee_1;omitempty"`
+	CouponRefundFee2 int64 `json:"coupon_refund_fee_2;omitempty" query:"coupon_refund_fee_2;omitempty"`
+	CouponRefundFee3 int64 `json:"coupon_refund_fee_3;omitempty" query:"coupon_refund_fee_3;omitempty"`
+	CouponRefundFee4 int64 `json:"coupon_refund_fee_4;omitempty" query:"coupon_refund_fee_4;omitempty"`
+
+	CouponRefundCount1 int64 `json:"coupon_refund_count_1;omitempty" query:"coupon_refund_count_1;omitempty"`
+	CouponRefundCount2 int64 `json:"coupon_refund_count_2;omitempty" query:"coupon_refund_count_2;omitempty"`
+	CouponRefundCount3 int64 `json:"coupon_refund_count_3;omitempty" query:"coupon_refund_count_3;omitempty"`
+	CouponRefundCount4 int64 `json:"coupon_refund_count_4;omitempty" query:"coupon_refund_count_4;omitempty"`
+
+	CouponRefundId01 string `json:"coupon_refund_id_0_1;omitempty" query:"coupon_refund_id_0_1;omitempty"`
+	CouponRefundId02 string `json:"coupon_refund_id_0_2;omitempty" query:"coupon_refund_id_0_2;omitempty"`
+	CouponRefundId03 string `json:"coupon_refund_id_0_3;omitempty" query:"coupon_refund_id_0_3;omitempty"`
+	CouponRefundId04 string `json:"coupon_refund_id_0_4;omitempty" query:"coupon_refund_id_0_4;omitempty"`
+
+	CouponRefundFee01 int64 `json:"coupon_refund_fee_0_1;omitempty" query:"coupon_refund_fee_0_1;omitempty"`
+	CouponRefundFee02 int64 `json:"coupon_refund_fee_0_2;omitempty" query:"coupon_refund_fee_0_2;omitempty"`
+	CouponRefundFee03 int64 `json:"coupon_refund_fee_0_3;omitempty" query:"coupon_refund_fee_0_3;omitempty"`
+	CouponRefundFee04 int64 `json:"coupon_refund_fee_0_4;omitempty" query:"coupon_refund_fee_0_4;omitempty"`
+
+	RefundStatus1 string `json:"refund_status_1;omitempty" query:"refund_status_1;omitempty"`
+	RefundStatus2 string `json:"refund_status_2;omitempty" query:"refund_status_2;omitempty"`
+	RefundStatus3 string `json:"refund_status_3;omitempty" query:"refund_status_3;omitempty"`
+	RefundStatus4 string `json:"refund_status_4;omitempty" query:"refund_status_4;omitempty"`
+
+	RefundAccount1 string `json:"refund_account_1;omitempty" query:"refund_account_1;omitempty"`
+	RefundAccount2 string `json:"refund_account_2;omitempty" query:"refund_account_2;omitempty"`
+	RefundAccount3 string `json:"refund_account_3;omitempty" query:"refund_account_3;omitempty"`
+	RefundAccount4 string `json:"refund_account_4;omitempty" query:"refund_account_4;omitempty"`
+
+	RefundRecvAccout1 string `json:"refund_recv_accout_1;omitempty" query:"refund_recv_accout_1;omitempty"`
+	RefundRecvAccout2 string `json:"refund_recv_accout_2;omitempty" query:"refund_recv_accout_2;omitempty"`
+	RefundRecvAccout3 string `json:"refund_recv_accout_3;omitempty" query:"refund_recv_accout_3;omitempty"`
+	RefundRecvAccout4 string `json:"refund_recv_accout_4;omitempty" query:"refund_recv_accout_4;omitempty"`
+
+	RefundSuccessTime1 string `json:"refund_success_time_1;omitempty" query:"refund_success_time_1;omitempty"`
+	RefundSuccessTime2 string `json:"refund_success_time_2;omitempty" query:"refund_success_time_2;omitempty"`
+	RefundSuccessTime3 string `json:"refund_success_time_3;omitempty" query:"refund_success_time_3;omitempty"`
+	RefundSuccessTime4 string `json:"refund_success_time_4;omitempty" query:"refund_success_time_4;omitempty"`
+}
+
 type NotifyDto struct {
 	ReturnCode string `xml:"return_code,omitempty" json:"return_code,omitempty"  query:"return_code,omitempty"`
 	ReturnMsg  string `xml:"return_msg,omitempty" json:"return_msg,omitempty"  query:"return_msg,omitempty"`
@@ -274,14 +352,9 @@ type NotifyDto struct {
 	TimeEnd       string `xml:"time_end,omitempty" json:"time_end,omitempty" query:"time_end,omitempty"`
 }
 
-type RespRefundQueryDto struct {
-	TransactionId      string `json:"transaction_id;omitempty" query:"transaction_id;omitempty"`
-	OutTradeNo         string `json:"out_trade_no;omitempty" query:"out_trade_no;omitempty"`
-	TotalFee           int64  `json:"total_fee;omitempty" query:"total_fee;omitempty"`
-	SettlementTotalFee int64  `json:"settlement_total_fee;omitempty" query:"settlement_total_fee;omitempty"`
-	FeeType            string `json:"fee_type;omitempty" query:"fee_type;omitempty"`
-
-	CashFee          string `json:"cash_fee;omitempty" query:"cash_fee;omitempty"`
-	RefundCount      string `json:"refund_count;omitempty" query:"refund_count;omitempty"`
-	TotalRefundCount string `json:"total_refund_count;omitempty" query:"total_refund_count;omitempty"`
+type SceneInfoDto struct {
+	Id       string `json:"id,omitempty" query:"id,omitempty"`
+	Name     string `json:"name,omitempty" query:"name,omitempty"`
+	AreaCode string `json:"area_code,omitempty" query:"area_code,omitempty"`
+	Address  string `json:"address,omitempty" query:"address,omitempty"`
 }
