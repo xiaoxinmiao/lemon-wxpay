@@ -21,7 +21,7 @@ func Test_Pay(t *testing.T) {
 			AppId: *appId,
 			MchId: *mchId,
 		},
-		AuthCode: "134511727606227397",
+		AuthCode: "135006209188814190",
 		Body:     "xiaoxinmiao test",
 		TotalFee: 1,
 	}
@@ -53,7 +53,7 @@ func Test_Query(t *testing.T) {
 			AppId: *appId,
 			MchId: *mchId,
 		},
-		OutTradeNo: "14201711085205823413229775520",
+		OutTradeNo: "1417106101713423312722632917731",
 	}
 	custDto := ReqCustomerDto{
 		Key: *key,
@@ -69,7 +69,7 @@ func Test_Refund(t *testing.T) {
 			AppId: *appId,
 			MchId: *mchId,
 		},
-		OutTradeNo: "14201711085205823413229775520",
+		OutTradeNo: "1417106101713423312722632917731",
 		RefundFee:  1,
 	}
 	custDto := ReqCustomerDto{
@@ -89,7 +89,7 @@ func Test_Reverse(t *testing.T) {
 			AppId: *appId,
 			MchId: *mchId,
 		},
-		OutTradeNo: "1417084862106336446985",
+		OutTradeNo: "1417106101713423312722632917731",
 	}
 	custDto := ReqCustomerDto{
 		Key:          *key,
@@ -108,7 +108,7 @@ func Test_RefundQuery(t *testing.T) {
 			AppId: *appId,
 			MchId: *mchId,
 		},
-		OutTradeNo: "144650782494807835413",
+		OutTradeNo: "1417106101713423312722632917731",
 	}
 	custDto := ReqCustomerDto{
 		Key: *key,
