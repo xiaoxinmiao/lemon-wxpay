@@ -138,6 +138,24 @@ func Test_Prepay(t *testing.T) {
 	test.Ok(t, err)
 }
 
+func Test_Bill(t *testing.T) {
+	reqDto := ReqBillDto{
+		ReqBaseDto: &ReqBaseDto{
+			AppId: *appId,
+			MchId: *mchId,
+		},
+		BillDate: "20181220",
+		BillType: "ALL",
+		TarType:  "GZIP",
+	}
+	custDto := ReqCustomerDto{
+		Key: *key,
+	}
+	statusCode, code, result, err := Bill(&reqDto, &custDto)
+	fmt.Printf("statusCode:%+v,code:%+v,result:%+v", statusCode, code, string(result))
+	test.Ok(t, err)
+}
+
 func Test_Notify(t *testing.T) {
 	xmlBody := `<xml>
 	<appid><![CDATA[wx2421b1c4370ec43b]]></appid>

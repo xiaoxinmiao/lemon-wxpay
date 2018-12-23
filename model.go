@@ -93,6 +93,13 @@ type ReqRefundQueryDto struct {
 	Offset        int    `json:"offset,omitempty"`
 }
 
+type ReqBillDto struct {
+	*ReqBaseDto
+	BillDate string `json:"bill_date,omitempty" query:"bill_date,omitempty"` //20181217
+	BillType string `json:"bill_type,omitempty" query:"bill_type,omitempty"`
+	TarType  string `json:"tar_type,omitempty" query:"tar_type,omitempty"`
+}
+
 type ReqCustomerDto struct {
 	Key              string `json:"key,omitempty"`
 	CertPathName     string `json:"cert_path_name,omitempty"`
