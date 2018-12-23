@@ -10,6 +10,7 @@ import (
 
 	"github.com/relax-space/go-kitt/random"
 
+	"github.com/relax-space/go-kit/data"
 	"github.com/relax-space/go-kit/httpreq"
 
 	"github.com/relax-space/go-kit/base"
@@ -281,6 +282,58 @@ func Prepay(reqDto *ReqPrepayDto, custDto *ReqCustomerDto) (statusCode int, code
 	}
 	statusCode = resp.StatusCode
 	code, result, err = RespParse(body, custDto.Key)
+	return
+}
+
+func Bill(reqDto *ReqBillDto, custDto *ReqCustomerDto) (statusCode int, code string, result []byte, err error) {
+	wxPayData := BuildCommonparam(reqDto.ReqBaseDto)
+
+	SetValue(wxPayData, "bill_date", reqDto.BillDate)
+	SetValue(wxPayData, "bill_type", reqDto.BillType)
+	SetValue(wxPayData, "tar_type", reqDto.TarType)
+
+	signStr := base.JoinMapObject(wxPayData.DataAttr)
+	SetValue(wxPayData, "sign", sign.MakeMd5Sign(signStr, custDto.Key))
+	resp, body, err := httpreq.NewPost(URLBILL, []byte(wxPayData.ToXml()),
+		&httpreq.Header{ContentType: httpreq.MIMEApplicationXMLCharsetUTF8}, nil)
+	if err != nil {
+		code = E01
+		return
+	}
+	if resp == nil {
+		code = E01
+		return
+	}
+
+	statusCode = resp.StatusCode
+	contentType := resp.Header.Get("Content-Type")
+	if contentType == "application/x-gzip" { //success
+		b, err := GzipDecode(body)
+		if err != nil {
+			err = errors.New("unpacking file error")
+		}
+		result = b
+	} else if contentType == "text/plain; charset=utf-8" { //failure
+		data := data.New()
+		err = data.FromXml(string(body))
+		if err != nil {
+			code = E04
+			return
+		}
+		if !data.IsSet("return_code") {
+			err = errors.New("return_code is missing")
+			code = E04
+			return
+		}
+		if strings.ToUpper(data.GetValue("return_code").(string)) != "SUCCESS" {
+			err = fmt.Errorf("%v:%v", MESSAGE_WECHAT, data.GetValue("return_msg"))
+			code = E03
+			return
+		}
+		err = errors.New("return_code is wrong")
+		code = E03
+		return
+	}
 	return
 }
 
