@@ -1,8 +1,11 @@
 package wxpay
 
 import (
+	"bytes"
+	"compress/gzip"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"strings"
 
 	"github.com/relax-space/go-kit/base"
@@ -46,6 +49,7 @@ const (
 	URLQUERY       = "https://api.mch.weixin.qq.com/pay/orderquery"
 	URLPREPAY      = "https://api.mch.weixin.qq.com/pay/unifiedorder"
 	URLREFUNDQUERY = "https://api.mch.weixin.qq.com/pay/refundquery"
+	URLBILL        = "https://api.mch.weixin.qq.com/pay/downloadbill"
 )
 
 const (
@@ -123,4 +127,14 @@ func RespParse(bodyByte []byte, key string) (code string, result map[string]inte
 	result = data.DataAttr
 	return
 
+}
+
+func GzipDecode(in []byte) ([]byte, error) {
+	reader, err := gzip.NewReader(bytes.NewReader(in))
+	if err != nil {
+		return nil, err
+	}
+	defer reader.Close()
+
+	return ioutil.ReadAll(reader)
 }
